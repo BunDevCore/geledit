@@ -1,0 +1,10 @@
+POST	/login
+POST	/note/new
+POST	/note/save
+GET     /note/(id) [readonly]
+GET	    /note/(id)/edit
+DELETE	/note/(id)
+GET     /note
+POST	/logout
+POST	/note/addUser
+POST	/note/delUser
