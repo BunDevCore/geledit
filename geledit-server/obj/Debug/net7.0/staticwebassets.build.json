@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "uSWwDSa4CQ/G4j+DajqsziNe8ub3634CUhOFsbXE4TI=",
+  "Source": "geledit-server",
+  "BasePath": "_content/geledit-server",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
