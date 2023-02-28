@@ -2,11 +2,13 @@ import {useEffect, useState} from "react";
 import {getCookie, setCookie} from "cookies-next";
 import {createGlobalStyle, ThemeProvider} from "styled-components";
 import Head from "next/head";
-import "/util/fontawesome";
 import "/styles/globals.css";
+// @ts-ignore
 import Navbar from "/components/Navbar";
 import THEMES from "../util/theme/theme";
+// @ts-ignore
 import {getTheme} from "/util/theme/getTheme";
+// @ts-ignore
 import type {Theme} from "/types/theme";
 import type {AppProps} from "next/app";
 
