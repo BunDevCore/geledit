@@ -460,26 +460,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Uczen\\.nuget\\packages\\": {}
+    "/home/fen/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Uczen\\RiderProjects\\geledit\\geledit-server\\geledit-server.csproj",
+      "projectUniqueName": "/home/fen/RiderProjects/geledit/geledit-server/geledit-server.csproj",
       "projectName": "geledit-server",
-      "projectPath": "C:\\Users\\Uczen\\RiderProjects\\geledit\\geledit-server\\geledit-server.csproj",
-      "packagesPath": "C:\\Users\\Uczen\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Uczen\\RiderProjects\\geledit\\geledit-server\\obj\\",
+      "projectPath": "/home/fen/RiderProjects/geledit/geledit-server/geledit-server.csproj",
+      "packagesPath": "/home/fen/.nuget/packages/",
+      "outputPath": "/home/fen/RiderProjects/geledit/geledit-server/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Uczen\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/home/fen/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -518,6 +516,12 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[7.0.2, 7.0.2]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -526,7 +530,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.201\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/7.0.102/RuntimeIdentifierGraph.json"
       }
     }
   }
