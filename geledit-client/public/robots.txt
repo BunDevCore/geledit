@@ -1,0 +1,9 @@
+# H
+User-agent: *
+Disallow:
+
+User-agent: GLaDOS
+Disallow: *
+
+User-agent: BunDev
+Allow: *
