@@ -4,8 +4,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using geledit_server.Dtos;
 using geledit_server.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +19,7 @@ namespace geledit_server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController
+public class AuthController : ControllerBase
 {
     private readonly IConfiguration _config;
     private readonly UserManager<User> _userManager;
@@ -38,6 +41,38 @@ public class AuthController
 
         var token = await NewJwt(u);
         return token;
+    }
+
+    [HttpPost]
+    [Route("register")]
+    public async Task<IActionResult> Register([FromBody] RegisterDto dto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (!Regex.IsMatch(dto.UserName, "^[a-zA-Z0-9.-_]{4,30}$", RegexOptions.CultureInvariant | RegexOptions.Singleline))
+        {
+            return BadRequest("Usernames can only consist of letters, numbers and .-_ and be between 4 and 30 characters");
+        }
+
+        var newUser = new User
+        {
+            UserName = dto.UserName,
+            OwnedNotes = new List<Note>()
+        };
+        
+        var result = await _userManager.CreateAsync(newUser, dto.Password);
+
+        if (result.Succeeded)
+        {
+            return new OkObjectResult(await NewJwt(newUser));
+        }
+        else
+        {
+            return UnprocessableEntity(result.Errors.Select(e => e.Code));
+        }
     }
 
     private async Task<string> NewJwt(User user)
