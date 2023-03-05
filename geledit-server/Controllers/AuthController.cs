@@ -32,15 +32,28 @@ public class AuthController : ControllerBase
 
     [HttpPost]
     [Route("login")]
-    public async Task<string> Login()
+    public async Task<IActionResult> Login([FromBody] RegisterDto dto)
     {
-        var u = new User()
+        if (!ModelState.IsValid)
         {
-            OwnedNotes = new List<Note>(),
-        };
+            return BadRequest(ModelState);
+        }
+        
+        var user = await _userManager.FindByNameAsync(dto.UserName);
+        if (user == null)
+        {
+            return BadRequest();
+        }
 
-        var token = await NewJwt(u);
-        return token;
+        if (await _userManager.CheckPasswordAsync(user, dto.Password))
+        {
+            var token = await NewJwt(user);
+            return new OkObjectResult(token);
+        }
+
+        return BadRequest();
+
+
     }
 
     [HttpPost]
