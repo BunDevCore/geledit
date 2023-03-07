@@ -2,15 +2,13 @@ import {useEffect, useState} from "react";
 import {getCookie, setCookie} from "cookies-next";
 import {createGlobalStyle, ThemeProvider} from "styled-components";
 import Head from "next/head";
-import "/styles/globals.css";
-// @ts-ignore
-import Navbar from "/components/Navbar";
-import THEMES from "../util/theme/theme";
-// @ts-ignore
-import {getTheme} from "/util/theme/getTheme";
-// @ts-ignore
-import type {Theme} from "/types/theme";
+import "styles/globals.css";
+import Navbar from "components/Navbar";
+import THEMES from "util/theme/theme";
+import {getTheme} from "util/theme/getTheme";
 import type {AppProps} from "next/app";
+import type {Theme} from "types/theme";
+import type {ChangeTheme} from "types/navbar";
 
 const GlobalStyles = createGlobalStyle`
   html, body {
@@ -19,9 +17,9 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const App = ({Component, pageProps}: AppProps) => {
-    const [themeName, setThemeName] = useState(THEMES.DARK);
+    const [themeName, setThemeName] = useState(THEMES.LIGHT);
     useEffect(() => setThemeName(getCookie("NEXT_THEME") as string), []);
-    const changeTheme = (themeName: string) => {
+    const changeTheme: ChangeTheme = (themeName: string) => {
         setThemeName(themeName);
         setCookie("NEXT_THEME", themeName, {
             secure: true,
@@ -40,7 +38,8 @@ const App = ({Component, pageProps}: AppProps) => {
             <GlobalStyles/>
             <Component {...pageProps} />
         </ThemeProvider>
-    </>;
+    </>
+        ;
 }
 
 export default App;
