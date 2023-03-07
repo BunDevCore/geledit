@@ -1,5 +1,5 @@
-import {NavBarBox, NavBarSpace, NavBarNameLink} from "styles/Navbar/navbar";
-import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
+import {NavBarBox, NavBarSpace, NavBarNameLink, NavBarLoginBox} from "styles/Navbar/navbar";
+import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import {getCookie} from "cookies-next";
 import {useEffect, useState} from "react";
 import type {ChangeTheme} from "types/navbar";
@@ -34,8 +34,12 @@ const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
                 >
                     <MenuItem value={"light"}>Light</MenuItem>
                     <MenuItem value={"dark"}>Dark</MenuItem>
+                    <MenuItem value={"green"}>Green</MenuItem>
                 </Select>
             </FormControl>
+            <NavBarLoginBox>
+                <Button variant="outlined">Zaloguj się</Button>
+            </NavBarLoginBox>
         </NavBarBox>
     </>
 }

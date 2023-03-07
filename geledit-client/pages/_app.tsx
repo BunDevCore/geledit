@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {getCookie, setCookie} from "cookies-next";
 import {createGlobalStyle, ThemeProvider} from "styled-components";
+import {ThemeProvider as MuiThemeProvider} from "@mui/material";
 import Head from "next/head";
 import "styles/globals.css";
 import Navbar from "components/Navbar";
@@ -28,17 +29,18 @@ const App = ({Component, pageProps}: AppProps) => {
 
 
     return <>
-        <ThemeProvider theme={getTheme(themeName)}>
-            <Head>
-                <link href="/favicon.ico" rel="icon" type="image/x-icon"/>
-                <title>Geledit</title>
-            </Head>
-            <Navbar changeTheme={changeTheme}/>
-            <GlobalStyles/>
-            <Component {...pageProps} />
-        </ThemeProvider>
-    </>
-        ;
+        <MuiThemeProvider theme={getTheme(themeName).mui}>
+            <ThemeProvider theme={getTheme(themeName)}>
+                <Head>
+                    <link href="/favicon.ico" rel="icon" type="image/x-icon"/>
+                    <title>Geledit</title>
+                </Head>
+                <Navbar changeTheme={changeTheme}/>
+                <GlobalStyles/>
+                <Component {...pageProps} />
+            </ThemeProvider>
+        </MuiThemeProvider>
+    </>;
 }
 
 export default App;

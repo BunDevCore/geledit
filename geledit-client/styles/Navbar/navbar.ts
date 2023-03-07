@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const NavBarBox = styled.div`
   height: var(--navbar-height);
-  background-color: grey;
+  background-color: ${props => props.theme.navbarBackgroundColor};
   display: flex;
   align-items: center;
 `;
@@ -13,7 +13,7 @@ export const NavBarNameLink = styled(Link)`
   font-size: 1.25rem;
   margin: 0 1rem;
   height: var(--navbar-height);
-  color: black;
+  color: ${props => props.theme.navbarText};
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -23,6 +23,6 @@ export const NavBarSpace = styled.div`
   flex-grow: 1;
 `;
 
-export const NavBarDarkMode = styled.div`
-  
+export const NavBarLoginBox = styled.div`
+  margin: auto 1rem;
 `;
