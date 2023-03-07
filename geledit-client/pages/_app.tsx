@@ -4,8 +4,7 @@ import {createGlobalStyle, ThemeProvider} from "styled-components";
 import Head from "next/head";
 import "styles/globals.css";
 import Navbar from "components/Navbar";
-import THEMES from "util/theme/theme";
-import {getTheme} from "util/theme/getTheme";
+import {getTheme} from "util/theme/theme";
 import type {AppProps} from "next/app";
 import type {Theme} from "types/theme";
 import type {ChangeTheme} from "types/navbar";
@@ -17,7 +16,7 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const App = ({Component, pageProps}: AppProps) => {
-    const [themeName, setThemeName] = useState(THEMES.LIGHT);
+    const [themeName, setThemeName] = useState("light");
     useEffect(() => setThemeName(getCookie("NEXT_THEME") as string), []);
     const changeTheme: ChangeTheme = (themeName: string) => {
         setThemeName(themeName);

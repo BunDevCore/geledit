@@ -2,11 +2,10 @@ import {NavBarBox, NavBarSpace, NavBarNameLink} from "styles/Navbar/navbar";
 import {FormControl, InputLabel, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import {getCookie} from "cookies-next";
 import {useEffect, useState} from "react";
-import THEMES from "util/theme/theme";
 import type {ChangeTheme} from "types/navbar";
 
 const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
-    const [currTheme, setTheme] = useState(THEMES.LIGHT);
+    const [currTheme, setTheme] = useState("light");
 
     const handleChangeTheme = (event: SelectChangeEvent) => {
         changeTheme(event.target.value as string);
@@ -20,9 +19,7 @@ const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
     return <>
         <NavBarBox>
             <NavBarNameLink href="/">
-                <p>
-                    GELEDIT
-                </p>
+                <p>GELEDIT</p>
             </NavBarNameLink>
             <NavBarSpace/>
             <FormControl>

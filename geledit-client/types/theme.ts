@@ -1,4 +1,4 @@
 export interface Theme {
-    icon: string
+    type: string
     background: string
 }
