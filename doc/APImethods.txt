@@ -1,10 +1,30 @@
+Registers user
+POST	/register
+res: string with token or error/code what happen
+
+Logins user
 POST	/login
-POST	/note/new
-POST	/note/save
-GET     /note/(id) [readonly]
-GET	    /note/(id)/edit
-DELETE	/note/(id)
-GET     /note
+res: string with token or error/code what happen
+
 POST	/logout
-POST	/note/addUser
-POST	/note/delUser
+res: string with code (what happen like: saved/error no connection/error can't save)
+
+POST	/note/new
+res: path_to_note
+
+POST	/note/save
+res: string with code (what happen like: saved/error no connection/error can't save)
+
+GET     /note/(id) [readonly]
+res: whole note
+
+PUT	    /note/(id)/edit
+res: string with code (what happen like: saved/error no connection/error can't save)
+
+DELETE	/note/(id)
+res: string with code (what happen like: saved/error no connection/error can't save)
+
+GET     /note
+res: list of user notes
+
+
