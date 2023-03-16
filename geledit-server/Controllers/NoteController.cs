@@ -10,72 +10,77 @@ namespace geledit_server.Controllers;
 
 public class NoteController : ControllerBase
 {
-    private List<Note> Notes = new List<Note>() {
-        new Note
-        {
-            Id = 0,
-            Content = "0content0",
-            Name = "0test0",
-            Owner = new User
-            {
-                Id = 0,
-                Username = "0user0",
-                PwdHash = "0hash0",
-                OwnedNotes = new List<Note>(),
-            },
-        }
-    };
-    
+
     private readonly ILogger<NoteController> _logger;
+    private readonly GeleditContext _db;
     
-    public NoteController(ILogger<NoteController> logger)
+    public NoteController(ILogger<NoteController> logger, GeleditContext db)
     {
         _logger = logger;
+        _db = db;
     }
     
     [HttpGet]
-    public List<Note> Get()
+    public IEnumerable<Note> Get()
     {
-        return Notes;
-        //return Enumerable.Range(1, Notes.Count).Select(index => Notes[index - 1]);
+        return _db.Notes;
     }
 
-    [HttpGet("{Id}")]
+    [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Note))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult GetNote([FromRoute]int Id)
+    public IActionResult GetNote([FromRoute]long id)
     {
-        Note notatka;
-        try
+        var note = _db.Notes.Find(id);
+        if (note == null)
         {
-            notatka = Notes[Id];
-        } catch (ArgumentOutOfRangeException e)
-        {
-            return NotFound($"Index {Id} is out of range");
+            return NotFound("note is nonexistent");
         }
-        return Ok(notatka);
+
+        return Ok(note);
     }
-
-    [HttpPost("new")]
-    public string AddNote()
-    {
-        Note notatka = new Note
-        {
-            Id = 1,
-            Name = "Notatka",
-            Content = "afahfafhahfiuah Czyli co jest wewnątrz notatki",
-            Owner = new User
-            {
-                Id = 1,
-                Username = "XYZ",
-                PwdHash = "To be hashed or not to be hashed?",
-                OwnedNotes = new List<Note>(),
-            },
-        };
-        
-        Notes.Add(notatka);
-
-        return "Dodano nową notatkę";
-
-    }
+    
+    // [HttpPost("new")]
+    // public string AddNote()
+    // {
+    //     Note notatka = new Note   // [HttpPost("new")]
+    // public string AddNote()
+    // {
+    //     Note notatka = new Note
+    //     {
+    //         Id = 1,
+    //         Name = "Notatka",
+    //         Content = "afahfafhahfiuah Czyli co jest wewnątrz notatki",
+    //         Owner = new User
+    //         {
+    //             Id = 1,
+    //             Username = "XYZ",
+    //             PwdHash = "To be hashed or not to be hashed?",
+    //             OwnedNotes = new List<Note>(),
+    //         },
+    //     };
+    //     
+    //     Notes.Add(notatka);
+    //
+    //     return "Dodano nową notatkę";
+    //
+    // }
+    //     {
+    //         Id = 1,
+    //         Name = "Notatka",
+    //         Content = "afahfafhahfiuah Czyli co jest wewnątrz notatki",
+    //         Owner = new User
+    //         {
+    //             Id = 1,
+    //             Username = "XYZ",
+    //             PwdHash = "To be hashed or not to be hashed?",
+    //             OwnedNotes = new List<Note>(),
+    //         },
+    //     };
+    //     
+    //     Notes.Add(notatka);
+    //
+    //     return "Dodano nową notatkę";
+    //
+    // }
 }
