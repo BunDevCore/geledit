@@ -75,48 +75,4 @@ public class NoteController : ControllerBase
 
         return newNote.Id;
     }
-
-    // [HttpPost("new")]
-    // public string AddNote()
-    // {
-    //     Note notatka = new Note   // [HttpPost("new")]
-    // public string AddNote()
-    // {
-    //     Note notatka = new Note
-    //     {
-    //         Id = 1,
-    //         Name = "Notatka",
-    //         Content = "afahfafhahfiuah Czyli co jest wewnątrz notatki",
-    //         Owner = new User
-    //         {
-    //             Id = 1,
-    //             Username = "XYZ",
-    //             PwdHash = "To be hashed or not to be hashed?",
-    //             OwnedNotes = new List<Note>(),
-    //         },
-    //     };
-    //     
-    //     Notes.Add(notatka);
-    //
-    //     return "Dodano nową notatkę";
-    //
-    // }
-    //     {
-    //         Id = 1,
-    //         Name = "Notatka",
-    //         Content = "afahfafhahfiuah Czyli co jest wewnątrz notatki",
-    //         Owner = new User
-    //         {
-    //             Id = 1,
-    //             Username = "XYZ",
-    //             PwdHash = "To be hashed or not to be hashed?",
-    //             OwnedNotes = new List<Note>(),
-    //         },
-    //     };
-    //     
-    //     Notes.Add(notatka);
-    //
-    //     return "Dodano nową notatkę";
-    //
-    // }
 }
