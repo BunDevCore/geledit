@@ -1,9 +1,9 @@
-namespace geledit_server.Models;
+namespace geledit_server.Dtos;
 
-public class Note
+public class ReturnNoteDto
 {
     public long Id { get; set; }
+    public string Owner { get; set; }
     public string Title { get; set; }
     public string Content { get; set; }
-    public User Owner { get; set; }
 }
