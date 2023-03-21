@@ -54,7 +54,7 @@ public class NoteController : ControllerBase
         {
             Content = note.Content,
             Id = note.Id,
-            Owner = note.Owner.UserName,
+            Owner = note.Owner.UserName!,
             Title = note.Title
         });
     }
