@@ -84,10 +84,10 @@ public class NoteController : ControllerBase
     }
 
     [Authorize]
+    [HttpPost("{id}/addGuest")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Note))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [HttpPost("{id}/addGuest")]
     public async Task<IActionResult> AddGuestToNote([FromRoute] long id, [FromBody] string username)
     {
         var note = await _db.Notes.Include(x => x.Owner).FirstOrDefaultAsync(x => x.Id == id);
@@ -121,5 +121,23 @@ public class NoteController : ControllerBase
         });
     }
 
-    
+    [Authorize]
+    [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteNote([FromRoute] long id)
+    {
+        var note = await _db.Notes.Include(x => x.Owner).FirstOrDefaultAsync(x => x.Id == id);
+        if (note == null)
+        {
+            return NotFound("note is nonexistent");
+        }
+
+        _db.Notes.Remove(note);
+        _db.SaveChanges();
+
+        return Ok();
+    }
+
+
 }
