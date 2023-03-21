@@ -1,4 +1,11 @@
+import type {Theme as MuiTheme} from "@mui/material";
+
 export interface Theme {
-    icon: string
+    mui: MuiTheme
+    type: string
     background: string
+
+    navbarBackgroundColor: string,
+    navbarText: string,
+
 }
