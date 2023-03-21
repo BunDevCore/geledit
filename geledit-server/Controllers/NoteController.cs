@@ -40,9 +40,9 @@ public class NoteController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Note))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult GetNote([FromRoute] long id)
+    public async Task<IActionResult> GetNote([FromRoute] long id)
     {
-        var note = _db.Notes.Include(x => x.Owner).FirstOrDefault(x => x.Id == id);
+        var note = await _db.Notes.Include(x => x.Owner).Include(n => n.Guests).FirstOrDefaultAsync(x => x.Id == id);
         if (note == null)
         {
             return NotFound("note is nonexistent");
@@ -50,13 +50,7 @@ public class NoteController : ControllerBase
 
         _logger.LogInformation(note.Owner.ToString());
 
-        return Ok(new ReturnNoteDto
-        {
-            Content = note.Content,
-            Id = note.Id,
-            Owner = note.Owner.UserName!,
-            Title = note.Title
-        });
+        return Ok(ReturnNoteDto.FromNote(note, true));
     }
 
     [Authorize]
@@ -72,10 +66,12 @@ public class NoteController : ControllerBase
         {
             Content = "",
             Title = noteDto.Title,
-            Owner = dbUser!
+            Owner = dbUser!,
+            Guests = new HashSet<User>()
         };
 
         _db.Notes.Add(newNote);
+        _logger.LogInformation($"n.g = {newNote.Guests}");
         _db.SaveChanges();
 
         _logger.LogInformation(newNote.Owner.ToString());
@@ -90,7 +86,8 @@ public class NoteController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddGuestToNote([FromRoute] long id, [FromBody] string username)
     {
-        var note = await _db.Notes.Include(x => x.Owner).FirstOrDefaultAsync(x => x.Id == id);
+        _logger.LogInformation($"username = {username}");
+        var note = await _db.Notes.Include(x => x.Owner).Include(n => n.Guests).FirstOrDefaultAsync(x => x.Id == id);
         if (note == null)
         {
             return NotFound("note is nonexistent");
@@ -101,6 +98,7 @@ public class NoteController : ControllerBase
         {
             return NotFound("user does not exist");
         }
+        _logger.LogInformation($"guest = {guest}");
 
         var userId = _userManager.GetUserId(User);
         if (note.Owner.UserName != userId)
@@ -108,17 +106,12 @@ public class NoteController : ControllerBase
             return Unauthorized("you are not owner of this note");
         }
 
+        _logger.LogInformation($"note.Guests = {note.Guests}");
         note.Guests.Add(guest);
+        _logger.LogInformation("after add");
         await _db.SaveChangesAsync();
 
-        return Ok(new Note
-        {
-            Id = note.Id,
-            Content = note.Content,
-            Title = note.Title,
-            Owner = note.Owner,
-            Guests = note.Guests,
-        });
+        return Ok(ReturnNoteDto.FromNote(note, true));
     }
 
     [Authorize]
