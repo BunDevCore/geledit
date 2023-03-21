@@ -72,7 +72,7 @@ public class NoteController : ControllerBase
 
         _db.Notes.Add(newNote);
         _logger.LogInformation($"n.g = {newNote.Guests}");
-        _db.SaveChanges();
+        await _db.SaveChangesAsync();
 
         _logger.LogInformation(newNote.Owner.ToString());
 
@@ -80,7 +80,7 @@ public class NoteController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("{id}/addGuest")]
+    [HttpPost("{id}/guest")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Note))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -127,9 +127,39 @@ public class NoteController : ControllerBase
         }
 
         _db.Notes.Remove(note);
-        _db.SaveChanges();
+        await _db.SaveChangesAsync();
 
         return Ok();
+    }
+
+    [Authorize]
+    [HttpDelete("{id}/guest")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Note))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteGuest([FromRoute] long id, [FromBody] string username)
+    {
+        var note = await _db.Notes.Include(x => x.Owner).Include(n => n.Guests).FirstOrDefaultAsync(x => x.Id == id);
+        if (note == null)
+        {
+            return NotFound("note is nonexistent");
+        }
+
+        var guest = await _db.Users.FirstOrDefaultAsync(x => x.UserName == username);
+        if (guest == null)
+        {
+            return NotFound("user does not exist");
+        }
+        
+        var userId = _userManager.GetUserId(User);
+        if (note.Owner.UserName != userId)
+        {
+            return Unauthorized("you are not owner of this note");
+        }
+
+        note.Guests.Remove(guest);
+        await _db.SaveChangesAsync();
+
+        return Ok(ReturnNoteDto.FromNote(note, true));
     }
 
 
