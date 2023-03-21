@@ -12,10 +12,8 @@ namespace geledit_server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-
 public class NoteController : ControllerBase
 {
-
     private readonly ILogger<NoteController> _logger;
     private readonly GeleditContext _db;
     private readonly UserManager<User> _userManager;
@@ -28,21 +26,29 @@ public class NoteController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Note> Get()
+    public IEnumerable<ReturnNoteDto> Get()
     {
-        return _db.Notes;
+        return _db.Notes.Select(note => new ReturnNoteDto
+        {
+            Content = null,
+            Id = note.Id,
+            Owner = note.Owner.UserName,
+            Title = note.Title
+        });
     }
 
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Note))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult GetNote([FromRoute]long id)
+    public IActionResult GetNote([FromRoute] long id)
     {
         var note = _db.Notes.Include(x => x.Owner).FirstOrDefault(x => x.Id == id);
         if (note == null)
         {
             return NotFound("note is nonexistent");
         }
+
+        _logger.LogInformation(note.Owner.ToString());
 
         return Ok(new ReturnNoteDto
         {
@@ -71,7 +77,7 @@ public class NoteController : ControllerBase
 
         _db.Notes.Add(newNote);
         _db.SaveChanges();
-        
+
         _logger.LogInformation(newNote.Owner.ToString());
 
         return newNote.Id;
@@ -95,16 +101,16 @@ public class NoteController : ControllerBase
         {
             return NotFound("user does not exist");
         }
-        
+
         var userId = _userManager.GetUserId(User);
         if (note.Owner.UserName != userId)
         {
             return Unauthorized("you are not owner of this note");
         }
-        
+
         note.Guests.Add(guest);
         await _db.SaveChangesAsync();
-        
+
         return Ok(new Note
         {
             Id = note.Id,
@@ -114,6 +120,6 @@ public class NoteController : ControllerBase
             Guests = note.Guests,
         });
     }
-    
+
     
 }
