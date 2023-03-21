@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import Link from "next/link";
+import {Button} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 
 export const NavBarBox = styled.div`
   height: var(--navbar-height);
@@ -25,4 +27,18 @@ export const NavBarSpace = styled.div`
 
 export const NavBarLoginBox = styled.div`
   margin: auto 1rem;
+`;
+
+export const LoginButton = styled(Button)`
+  border-radius: 100rem;
+  @media (max-width: 499px) {
+    display: none;
+  }
+`;
+
+export const LoginButtonIcon = styled(IconButton)`
+  border-radius: 100%;
+  @media (min-width: 500px) {
+    display: none;
+  }
 `;

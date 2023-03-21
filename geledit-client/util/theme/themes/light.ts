@@ -15,6 +15,9 @@ const theme: Theme = {
 
     navbarBackgroundColor: "#ccc",
     navbarText: "black",
+
+    loginBackgroundColor: "#eee",
+    loginBoxShadowColor: "gray",
 }
 
 export default theme;

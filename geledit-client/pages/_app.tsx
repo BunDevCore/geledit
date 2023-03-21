@@ -1,18 +1,35 @@
 import {useEffect, useState} from "react";
 import {getCookie, setCookie} from "cookies-next";
-import {createGlobalStyle, ThemeProvider} from "styled-components";
+import styled, {createGlobalStyle, ThemeProvider} from "styled-components";
 import {ThemeProvider as MuiThemeProvider} from "@mui/material";
 import Head from "next/head";
-import "styles/globals.css";
-import Navbar from "components/Navbar";
+import "../styles/globals.css";
+import Navbar from "../components/Navbar";
 import {getTheme} from "util/theme/theme";
 import type {AppProps} from "next/app";
-import type {Theme} from "types/theme";
-import type {ChangeTheme} from "types/navbar";
+import type {Theme} from "../types/theme";
+import type {ChangeTheme} from "../types/navbar";
 
 const GlobalStyles = createGlobalStyle`
   html, body {
     background: ${(props: { theme: Theme }) => props.theme.background};
+  }
+`;
+
+const FlexBoxLayout = styled.div`
+  display: grid;
+  grid-template-columns: 1fr min(60rem, 100%) 1fr;
+  
+  @media (max-width: 1000px) {
+    grid-template-columns: 1fr min(40rem, 100%) 1fr;
+  }
+  
+  @media (max-width: 700px) {
+    grid-template-columns: 0 100% 0;
+  }
+  
+  > * {
+    grid-column-start: 2
   }
 `;
 
@@ -37,7 +54,9 @@ const App = ({Component, pageProps}: AppProps) => {
                 </Head>
                 <Navbar changeTheme={changeTheme}/>
                 <GlobalStyles/>
-                <Component {...pageProps} />
+                <FlexBoxLayout>
+                    <Component {...pageProps} />
+                </FlexBoxLayout>
             </ThemeProvider>
         </MuiThemeProvider>
     </>;

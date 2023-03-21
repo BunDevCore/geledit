@@ -5,7 +5,13 @@ export interface Theme {
     type: string
     background: string
 
+    //navbar
     navbarBackgroundColor: string,
     navbarText: string,
 
+    // index
+
+    //login
+    loginBackgroundColor: string
+    loginBoxShadowColor: string
 }
