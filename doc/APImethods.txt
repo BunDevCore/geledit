@@ -1,30 +1,54 @@
 Registers user
-POST	/register
+POST	  /register
+  Password (More than 8 symbols) | Name (At leats 4 symbols. Can't have spaces)
 res: string with token or error/code what happen
 
 Logins user
-POST	/login
+POST  	/login
+  Password | Name
 res: string with token or error/code what happen
 
-POST	/logout
+POST  	/logout
 res: string with code (what happen like: saved/error no connection/error can't save)
 
-POST	/note/new
+POST	  /Note/new
+[Needs JWT token in header as bearer]
+  Title (in body)
 res: path_to_note
 
-POST	/note/save
+POST	  /Note/save
+[Needs JWT token in header as bearer]
 res: string with code (what happen like: saved/error no connection/error can't save)
 
-GET     /note/(id) [readonly]
+GET     /Note/(id) [readonly]
+[Needs JWT token in header as bearer]
+  id (long)
 res: whole note
 
-PUT	    /note/(id)/edit
+PUT	    /Note/(id)/edit
+[Needs JWT token in header as bearer]
 res: string with code (what happen like: saved/error no connection/error can't save)
 
-DELETE	/note/(id)
+DELETE	/Note/(id)
+[Needs JWT token in header as bearer]
+  id (long)
 res: string with code (what happen like: saved/error no connection/error can't save)
 
-GET     /note
+GET     /Note
+[Needs JWT token in header as bearer]
 res: list of user notes
+
+POST    /Note/(id)/guest
+[Needs JWT token in header as bearer]
+[Needs to be owner of this note]
+  id (long) | username (string in body)
+res: string with code (If note exists, if user exists, if user is owner of the note)
+
+DELETE  /Note/(id)/guest
+[Needs JWT token in header as bearer]
+[Needs to be owner of this note]
+  id (long) | username (string in body)
+res: string with code (If note exists, if user exists, if user is owner of the note)
+
 
 
