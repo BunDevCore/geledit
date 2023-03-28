@@ -91,6 +91,10 @@ const Login = () => {
             setPassLabel("Hasło musi być dłuższe niż 7 znaków")
             return;
         }
+        if (pass !== passAgain) {
+            setPassLabel("Hasła muszą być takie same")
+            return;
+        }
 
         (async () => {
             let res = await fetch("http://localhost:5274/Auth/register", {
