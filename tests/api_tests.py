@@ -100,7 +100,9 @@ def delete_guest_from_note(headers, note_id, username):
     delete_guest_url = base_url + f"/Note/{note_id}/guest"
     response = requests.delete(
         delete_guest_url,
-        json=username,
+        json={
+            "username": username
+        },
         headers=headers
     )
     if response.status_code == 200:
