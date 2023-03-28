@@ -17,6 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<GeleditContext>(opt => opt.UseInMemoryDatabase("testdb"));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
 builder.Services.AddAuthorization();
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
@@ -46,7 +47,6 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
-builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
 
 var app = builder.Build();
 
