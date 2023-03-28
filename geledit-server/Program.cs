@@ -20,7 +20,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy
     .AllowAnyHeader().
     AllowAnyMethod().
-    WithOrigins(builder.Configuration.GetValue<string[]>("CorsOrigins") ?? Array.Empty<string>())));
+    WithOrigins(builder.Configuration.GetValue<string[]>("CorsOrigins") ??
+                new []{"http://localhost:3000", "https://localhost:3000"})));
 builder.Services.AddAuthorization();
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
