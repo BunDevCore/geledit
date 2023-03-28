@@ -1,24 +1,20 @@
 import React, {useState} from "react";
-import {getCookie} from "cookies-next";
+import {getCookie, removeCookies} from "cookies-next";
 import {TextField} from "@mui/material";
 import Button from "@mui/material/Button";
-import useSWR from 'swr'
-
-interface Note {
-    "id": "number",
-    "owner": "string",
-    "title": "string",
-    "content": "string" | null,
-    "guests": [
-        "string"
-    ]
-}
+import useSWR from "swr";
+import {UserBox} from "../../styles/Notes/notes";
 
 // @ts-ignore
 const fetcher = (...args: any[]) => fetch(...args).then((res) => res.json())
 
 const Notes = () => {
     const [noteName, setNoteName] = useState("");
+    const handleLogout = (_event: React.MouseEvent<HTMLButtonElement>) => {
+        removeCookies("token");
+        window.location.href = "/";
+    }
+
     const handleNewNote = (_event: React.MouseEvent<HTMLButtonElement>) => {
         let t = getCookie("token");
         (async () => {
@@ -37,7 +33,7 @@ const Notes = () => {
             await mutate();
         })();
     };
-    const { data, error, isLoading, mutate }: {data: Note[]} = useSWR("http://localhost:5274/Note", fetcher);
+    const { data, error, isLoading, mutate }: {data: Note[] | undefined} = useSWR("http://localhost:5274/Note", fetcher);
 
     if (error) return <div>Failed to load</div>
     
@@ -49,8 +45,12 @@ const Notes = () => {
     }
 
     return <>
-        <TextField id="note-name" label="Nazwa notatki" variant="filled" required onChange={(e) => setNoteName(e.target.value)}/>
-        <Button variant="contained" onClick={handleNewNote}>Nowa notatka</Button>
+        <UserBox>
+            <TextField id="note-name" label="Nazwa notatki" variant="filled" required onChange={(e) => setNoteName(e.target.value)}/>
+            <Button variant="contained" onClick={handleNewNote}>Nowa notatka</Button>
+
+            <Button variant="contained" onClick={handleLogout}>Wyloguj</Button>
+        </UserBox>
         {isLoading ? <div>Loading...</div> : notatki}
     </>
 }
