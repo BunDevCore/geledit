@@ -55,13 +55,11 @@ const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
                 </Select>
             </FormControl>
             <NavBarLoginBox>
-                {/* @ts-ignore: it is defined */}
-                <LinkLogin isLoggedIn={isLoggedIn} href="/login" style={{textDecoration: "none"}}>
+                <LinkLogin $isLoggedIn={isLoggedIn} href="/login" style={{textDecoration: "none"}}>
                     <LoginButton variant="outlined" aria-label="login button">Zaloguj się</LoginButton>
                     <LoginButtonIcon color="primary" aria-label="login button"><LoginIcon/></LoginButtonIcon>
                 </LinkLogin>
-                {/* @ts-ignore: it is defined */}
-                <LinkUser isLoggedIn={isLoggedIn} href="/notes" style={{textDecoration: "none"}}>
+                <LinkUser $isLoggedIn={isLoggedIn} href="/notes" style={{textDecoration: "none"}}>
                     <UserButtonIcon color="primary" aria-label="user button"><AccountIcon/></UserButtonIcon>
                 </LinkUser>
             </NavBarLoginBox>
