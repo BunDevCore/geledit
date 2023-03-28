@@ -1,15 +1,28 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {getCookie, removeCookies} from "cookies-next";
 import {TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import useSWR from "swr";
-import {UserBox} from "../../styles/Notes/notes";
+import * as jose from "jose";
+import {FlexSpace, UserBox, NoteBox} from "../../styles/Notes/notes";
 
 // @ts-ignore
 const fetcher = (...args: any[]) => fetch(...args).then((res) => res.json())
 
 const Notes = () => {
     const [noteName, setNoteName] = useState("");
+    const [token, setToken] = useState<string | undefined>(undefined);
+    const [user, setUser] = useState<string | undefined>(null);
+
+    useEffect(() => {
+        let t: string | undefined = getCookie("token")?.toString();
+        setToken(t)
+        if (t !== undefined) {
+            let dec = jose.decodeJwt(t);
+            setUser(dec.sub)
+        }
+    }, []);
+
     const handleLogout = (_event: React.MouseEvent<HTMLButtonElement>) => {
         removeCookies("token");
         window.location.href = "/";
@@ -40,15 +53,16 @@ const Notes = () => {
     let notatki: JSX.Element | JSX.Element[] = [];
     if (data !== undefined) {
         for (const notatka of data) {
-            notatki.push(<p key={notatka.id}>{notatka.title}</p>)
+            notatki.push(<NoteBox key={notatka.id}>{notatka.title}</NoteBox>)
         }
     }
 
     return <>
-        <UserBox>
+        <UserBox style={{display: token === undefined ? "none" : ""}}>
             <TextField id="note-name" label="Nazwa notatki" variant="filled" required onChange={(e) => setNoteName(e.target.value)}/>
             <Button variant="contained" onClick={handleNewNote}>Nowa notatka</Button>
-
+            <FlexSpace/>
+            <p>{user}</p>
             <Button variant="contained" onClick={handleLogout}>Wyloguj</Button>
         </UserBox>
         {isLoading ? <div>Loading...</div> : notatki}
