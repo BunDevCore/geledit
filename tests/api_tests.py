@@ -17,7 +17,7 @@ def register(username, password):
     JWT = response.content.decode("UTF-8")
 
     if response.status_code != 200:
-        print(f"Error {response.content}")
+        print(f"Error [register] {response.content}")
         exit()
 
     print("Logged in")
@@ -49,11 +49,10 @@ def get_all_notes(header):
         get_note_url,
         headers=headers
     )
-    print(response)
     if response.status_code == 200:
-        print(f"List of notes: \n {response.content}")
+        print(f"List of notes:\n{response.content}")
     else:
-        print(f"Error {response.headers}")
+        print(f"Error [get_all_notes] {response.headers}")
         exit()
 
 
@@ -63,11 +62,10 @@ def get_note(header, note_id):
         get_note_url,
         headers=headers
     )
-    print(response)
     if response.status_code == 200:
-        print(f"Note: {note_id} exists and can be accesed")
+        print(f"Note: {note_id} exists and can be accesed\n{response.content}")
     else:
-        print(f"Error {response.content}")
+        print(f"Error [get_note] {response.content}")
         exit()
 
 
@@ -77,11 +75,10 @@ def delete_note(headers, note_id):
         delete_note_url,
         headers=headers
     )
-    print(response)
     if response.status_code == 200:
         print(f"Note: {note_id} was deleted")
     else:
-        print(f"Error {response.content}")
+        print(f"Error [delete_note] {response.content}")
         exit()
 
 
@@ -92,11 +89,24 @@ def add_guest_to_note(headers, note_id, username):
         json=username,
         headers=headers
     )
-    print(response)
     if response.status_code == 200:
         print(f"Guest: {username} was added to note: {note_id}")
     else:
-        print(f"Error {response.content}")
+        print(f"Error [add_guest_to_note] {response.content}")
+        exit()
+
+
+def delete_guest_from_note(headers, note_id, username):
+    delete_guest_url = base_url + f"/Note/{note_id}/guest"
+    response = requests.delete(
+        delete_guest_url,
+        json=username,
+        headers=headers
+    )
+    if response.status_code == 200:
+        print(f"Guest: {username} was deleted from note: {note_id}")
+    else:
+        print(f"Error [delete_guest_from_note] {response.content}")
         exit()
 
 
@@ -116,6 +126,10 @@ note3 = create_note(headers, "Huh")
 get_note(headers, note)
 
 add_guest_to_note(headers, note, user2)
+
+get_note(headers, note)
+
+delete_guest_from_note(headers, note, user2)
 
 delete_note(headers, note2)
 
