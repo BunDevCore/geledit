@@ -31,6 +31,7 @@ export const NavBarLoginBox = styled.div`
 
 export const LoginButton = styled(Button)`
   border-radius: 100rem;
+  text-decoration: none !important;
   @media (max-width: 499px) {
     display: none;
   }
@@ -38,6 +39,7 @@ export const LoginButton = styled(Button)`
 
 export const LoginButtonIcon = styled(IconButton)`
   border-radius: 100%;
+  border: #2196f3a0 solid 1px;
   @media (min-width: 500px) {
     display: none;
   }

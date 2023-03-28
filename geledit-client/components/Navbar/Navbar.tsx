@@ -6,9 +6,8 @@ import {
     LoginButtonIcon,
     LoginButton
 } from "styles/Navbar/navbar";
-import {Button, FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
+import {FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
-import IconButton from '@mui/material/IconButton';
 import {getCookie} from "cookies-next";
 import {useEffect, useState} from "react";
 import Link from "next/link";
@@ -35,7 +34,7 @@ const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
             <FormControl>
                 <Select
                     labelId="theme-label"
-                    value={currTheme}
+                    value={currTheme as ""}
                     label="Theme"
                     onChange={handleChangeTheme}
                     variant="standard"
@@ -48,7 +47,7 @@ const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
                 </Select>
             </FormControl>
             <NavBarLoginBox>
-                <Link href="/login">
+                <Link href="/login" style={{textDecoration: "none"}}>
                     <LoginButton variant="outlined" aria-label="login button">Zaloguj się</LoginButton>
                     <LoginButtonIcon color="primary" aria-label="login button"><LoginIcon/></LoginButtonIcon>
                 </Link>
