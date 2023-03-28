@@ -108,6 +108,10 @@ const Login = () => {
                     "password": pass
                 })
             });
+            if (res.status === 422) {
+                setLoginLabel("Użytkownik o takim loginie już istnieje")
+                return;
+            }
             let data = await res.text();
             setCookie("token", data, {
                 sameSite: "lax",
