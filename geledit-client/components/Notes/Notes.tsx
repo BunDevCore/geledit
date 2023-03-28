@@ -3,6 +3,8 @@ import React, {useState} from "react";
 import {getCookie, setCookie} from "cookies-next";
 import {TextField} from "@mui/material";
 import Button from "@mui/material/Button";
+import useSWR from 'swr'
+
 
 interface Note {
     "id": "number",
@@ -14,7 +16,12 @@ interface Note {
     ]
 }
 
-const Notes = ({data}: {data: Note[]}) => {
+
+// @ts-ignore
+const fetcher = (...args: any[]) => fetch(...args).then((res) => res.json())
+    
+
+const Notes = () => {
     const [noteName, setNoteName] = useState("");
     const handleNewNote = (_event: React.MouseEvent<HTMLButtonElement>) => {
         let t = getCookie("token");
@@ -31,10 +38,15 @@ const Notes = ({data}: {data: Note[]}) => {
                 })
             });
             console.log(res);
-            location.reload();
+            mutate();
         })();
     };
 
+    const { data, error, isLoading, mutate } = useSWR('http://localhost:5274/Note', fetcher);
+
+    if (error) return <div>Failed to load</div>
+    if (isLoading) return <div>Loading...</div>
+    
     const notatki = [];
     for (const notatka of data) {
         notatki.push(<p key={notatka.id}>{notatka.title}</p>)
