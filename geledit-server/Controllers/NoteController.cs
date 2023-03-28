@@ -162,5 +162,65 @@ public class NoteController : ControllerBase
         return Ok(ReturnNoteDto.FromNote(note, true));
     }
 
+    [Authorize]
+    [HttpPost]
+    [Route("{id}/refresh")]
+    public async Task<IActionResult> RefreshOwnership(long id)
+    {
+        var note = await _db.Notes.Include(x => x.Owner).Include(n => n.Guests).FirstOrDefaultAsync(x => x.Id == id);
+        if (note == null)
+        {
+            return NotFound("note is nonexistent");
+        }
+        
+        var userId = _userManager.GetUserId(User);
 
+        if (userId != note?.Owner.UserName || note?.Guests.FirstOrDefault(x => x.UserName == userId) == null)
+        {
+            return Unauthorized("you have no write permissions for this note");
+        }
+        
+        // at this point the note is valid, the user is authorized, let's go
+        var dbUser = await _db.Users.FirstAsync(x => x.UserName == userId);
+        if (note.CurrentEditor != null && note.CurrentEditor.Id != dbUser.Id)
+        {
+            return Conflict("write access to this note is already taken!");
+        }
+        
+        note.CurrentEditor = dbUser;
+        note.ReservedUntil = DateTime.UtcNow + TimeSpan.FromSeconds(20);
+        await _db.SaveChangesAsync();
+        return Ok(ReturnNoteDto.FromNote(note, true));
+    }
+
+    [Route("{id}")]
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> ChangeContent(long id, [FromBody] string newContent)
+    {
+        var note = await _db.Notes.Include(x => x.Owner).Include(n => n.Guests).FirstOrDefaultAsync(x => x.Id == id);
+        if (note == null)
+        {
+            return NotFound("note is nonexistent");
+        }
+        
+        var userId = _userManager.GetUserId(User);
+        
+        if (userId != note?.Owner.UserName || note?.Guests.FirstOrDefault(x => x.UserName == userId) == null)
+        {
+            return Unauthorized("you have no write permissions for this note");
+        }
+        
+        // potencjalnie śmieszne race condition tu może być ale idc
+        if (note.CurrentEditor == null || note.CurrentEditor.UserName == userId)
+        {
+            var dbUser = await _db.Users.FirstAsync(x => x.UserName == userId);
+            await RefreshOwnership(id);
+            note.Content = newContent;
+            await _db.SaveChangesAsync();
+            return Ok();
+        }
+
+        return Conflict("could not take write access to the note");
+    }
 }
