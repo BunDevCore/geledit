@@ -17,6 +17,11 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<GeleditContext>(opt => opt.UseInMemoryDatabase("testdb"));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy
+    .AllowAnyHeader().
+    AllowAnyMethod().
+    WithOrigins(builder.Configuration.GetValue<string[]>("CorsOrigins") ??
+                new []{"http://localhost:3000", "https://localhost:3000"})));
 builder.Services.AddAuthorization();
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
@@ -46,6 +51,7 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -56,6 +62,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
