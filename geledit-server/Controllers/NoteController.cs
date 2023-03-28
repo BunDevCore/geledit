@@ -84,16 +84,16 @@ public class NoteController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Note))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> AddGuestToNote([FromRoute] long id, [FromBody] string username)
+    public async Task<IActionResult> AddGuestToNote([FromRoute] long id, [FromBody] UsernameDto usernameDto)
     {
-        _logger.LogInformation($"username = {username}");
+        _logger.LogInformation($"username = {usernameDto}");
         var note = await _db.Notes.Include(x => x.Owner).Include(n => n.Guests).FirstOrDefaultAsync(x => x.Id == id);
         if (note == null)
         {
             return NotFound("note is nonexistent");
         }
 
-        var guest = await _db.Users.FirstOrDefaultAsync(x => x.UserName == username);
+        var guest = await _db.Users.FirstOrDefaultAsync(x => x.UserName == usernameDto.username);
         if (guest == null)
         {
             return NotFound("user does not exist");
@@ -136,7 +136,7 @@ public class NoteController : ControllerBase
     [HttpDelete("{id}/guest")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Note))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteGuest([FromRoute] long id, [FromBody] string username)
+    public async Task<IActionResult> DeleteGuest([FromRoute] long id, [FromBody] UsernameDto usernameDto)
     {
         var note = await _db.Notes.Include(x => x.Owner).Include(n => n.Guests).FirstOrDefaultAsync(x => x.Id == id);
         if (note == null)
@@ -144,7 +144,7 @@ public class NoteController : ControllerBase
             return NotFound("note is nonexistent");
         }
 
-        var guest = await _db.Users.FirstOrDefaultAsync(x => x.UserName == username);
+        var guest = await _db.Users.FirstOrDefaultAsync(x => x.UserName == usernameDto.username);
         if (guest == null)
         {
             return NotFound("user does not exist");
@@ -196,7 +196,7 @@ public class NoteController : ControllerBase
     [Route("{id}")]
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> ChangeContent(long id, [FromBody] string newContent)
+    public async Task<IActionResult> ChangeContent(long id, [FromBody] UpdateNoteDto updateNoteDto)
     {
         var note = await _db.Notes.Include(x => x.Owner).Include(n => n.Guests).FirstOrDefaultAsync(x => x.Id == id);
         if (note == null)
@@ -217,7 +217,8 @@ public class NoteController : ControllerBase
         {
             var dbUser = await _db.Users.FirstAsync(x => x.UserName == userId);
             await RefreshOwnership(id);
-            note.Content = newContent;
+            note.Content = updateNoteDto.Content;
+            note.Title = updateNoteDto.Title;
             await _db.SaveChangesAsync();
             return Ok();
         }
