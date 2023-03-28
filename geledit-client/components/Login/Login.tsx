@@ -69,8 +69,6 @@ const Login = () => {
                 window.location.replace("/");
             }
         })();
-
-
     };
 
     const handleRegister = (_event: React.MouseEvent<HTMLButtonElement>) => {

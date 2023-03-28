@@ -4,17 +4,21 @@ import {
     NavBarNameLink,
     NavBarLoginBox,
     LoginButtonIcon,
-    LoginButton
+    LoginButton,
+    UserButtonIcon,
+    LinkLogin,
+    LinkUser
 } from "styles/Navbar/navbar";
 import {FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
+import AccountIcon from "@mui/icons-material/AccountCircle";
 import {getCookie} from "cookies-next";
 import {useEffect, useState} from "react";
-import Link from "next/link";
 import type {ChangeTheme} from "types/navbar";
 
 const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
     const [currTheme, setTheme] = useState("light");
+    const [isLoggedIn, setLoggedIn] = useState(false);
 
     const handleChangeTheme = (event: SelectChangeEvent) => {
         changeTheme(event.target.value as string);
@@ -22,7 +26,11 @@ const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
     };
 
     useEffect(() => {
-        setTheme(getCookie("NEXT_THEME") as string || "light")
+        setTheme(getCookie("NEXT_THEME") as string || "light");
+        let t = getCookie("token");
+        if (t !== undefined) {
+            setLoggedIn(true)
+        }
     }, []);
 
     return <>
@@ -47,10 +55,15 @@ const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
                 </Select>
             </FormControl>
             <NavBarLoginBox>
-                <Link href="/login" style={{textDecoration: "none"}}>
+                {/* @ts-ignore: it is defined */}
+                <LinkLogin isLoggedIn={isLoggedIn} href="/login" style={{textDecoration: "none"}}>
                     <LoginButton variant="outlined" aria-label="login button">Zaloguj się</LoginButton>
                     <LoginButtonIcon color="primary" aria-label="login button"><LoginIcon/></LoginButtonIcon>
-                </Link>
+                </LinkLogin>
+                {/* @ts-ignore: it is defined */}
+                <LinkUser isLoggedIn={isLoggedIn} href="/notes" style={{textDecoration: "none"}}>
+                    <UserButtonIcon color="primary" aria-label="user button"><AccountIcon/></UserButtonIcon>
+                </LinkUser>
             </NavBarLoginBox>
         </NavBarBox>
     </>

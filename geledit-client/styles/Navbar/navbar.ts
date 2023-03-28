@@ -44,3 +44,17 @@ export const LoginButtonIcon = styled(IconButton)`
     display: none;
   }
 `;
+
+export const UserButtonIcon = styled(IconButton)``;
+
+export const LinkLogin = styled(Link)`
+  
+  display: ${props => // @ts-ignore: it is defined
+          props.isLoggedIn ? "none" : ""};
+`;
+
+export const LinkUser = styled(Link)`
+  display: ${props => // @ts-ignore: it is defined
+          props.isLoggedIn ? "" : "none"};
+
+`;
