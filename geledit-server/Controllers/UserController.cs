@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace geledit_server.Controllers;
 
 [ApiController]
-[Route("{controller}")]
+[Route("[controller]")]
 public class UserController : ControllerBase
 {
     private readonly UserManager<User> _userManager;

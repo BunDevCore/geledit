@@ -23,6 +23,9 @@ public class GeleditContext : DbContext
         modelBuilder.Entity<Note>()
             .HasOne(n => n.Owner);
 
+        modelBuilder.Entity<Note>()
+            .HasOne(n => n.CurrentEditor);
+
         modelBuilder.Entity<User>()
             .HasMany(u => u.OwnedNotes);
     }
