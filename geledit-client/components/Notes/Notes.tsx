@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {getCookie, removeCookies} from "cookies-next";
 import {TextField} from "@mui/material";
 import Button from "@mui/material/Button";
-import useSWR from "swr";
+import useSWR, { KeyedMutator } from "swr";
 import * as jose from "jose";
 import {FlexSpace, UserBox, NoteBox} from "../../styles/Notes/notes";
 
@@ -46,7 +46,7 @@ const Notes = () => {
             await mutate();
         })();
     };
-    const { data, error, isLoading, mutate }: {data: Note[] | undefined} = useSWR("http://localhost:5274/Note", fetcher);
+    const { data, error, isLoading, mutate }: {data: Note[] | undefined, error: any, isLoading: boolean, mutate: KeyedMutator<any>} = useSWR("http://localhost:5274/Note", fetcher);
 
     if (error) return <div>Failed to load</div>
     
