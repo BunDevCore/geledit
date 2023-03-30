@@ -36,7 +36,7 @@ const Notes = () => {
                 mode: "cors",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": "Bearer "+t
+                    "Authorization": "Bearer " + t
                 },
                 body: JSON.stringify({
                     "title": noteName
@@ -48,10 +48,10 @@ const Notes = () => {
     };
     const { data, error, isLoading, mutate }: {data: Note[] | undefined, error: any, isLoading: boolean, mutate: KeyedMutator<any>} = useSWR("http://localhost:5274/Note", fetcher);
 
-    if (error) return <div>Failed to load</div>
-    
+    if (error) return <NoteInfo>Failed to load</NoteInfo>
+
     let notatki: JSX.Element | JSX.Element[] = [];
-    if (data !== undefined) {
+    if (data?.length > 0) {
         for (const notatka of data) {
             notatki.push(<NoteBox key={notatka.id}>{notatka.title}</NoteBox>)
         }
@@ -59,11 +59,9 @@ const Notes = () => {
 
     return <>
         <UserBox style={{display: token === undefined ? "none" : ""}}>
-            <TextField id="note-name" label="Nazwa notatki" variant="filled" required onChange={(e) => setNoteName(e.target.value)}/>
-            <Button variant="contained" onClick={handleNewNote}>Nowa notatka</Button>
-            <FlexSpace/>
-            <p>{user}</p>
-            <Button variant="contained" onClick={handleLogout}>Wyloguj</Button>
+            <TextField style={{width: "100%"}} id="note-name" label="Nazwa notatki" variant="filled" required
+                       onChange={(e) => setNoteName(e.target.value)}/>
+            <Button style={{minWidth: "9rem"}} variant="contained" onClick={handleNewNote}>Nowa notatka</Button>
         </UserBox>
         {isLoading ? <div>Loading...</div> : notatki}
     </>
