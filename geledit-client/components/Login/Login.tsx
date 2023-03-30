@@ -115,7 +115,6 @@ const Login = () => {
             let data = await res.text();
             setCookie("token", data, {
                 sameSite: "lax",
-                // httpOnly:
             });
             window.location.replace("/");
         })();
