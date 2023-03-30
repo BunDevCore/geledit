@@ -7,23 +7,31 @@ import {
     LoginButton,
     UserButtonIcon,
     LinkLogin,
-    LinkUser
+    LinkUser,
+    UserNameDisplay
 } from "styles/Navbar/navbar";
 import {FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
-import AccountIcon from "@mui/icons-material/AccountCircle";
+import LogoutIcon from '@mui/icons-material/Logout';
 import {getCookie, removeCookies} from "cookies-next";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import type {ChangeTheme} from "types/navbar";
+import * as jose from "jose";
 
 const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
     const [currTheme, setTheme] = useState("light");
     const [isLoggedIn, setLoggedIn] = useState(false);
+    const [user, setUser] = useState<string | undefined>("");
 
     const handleChangeTheme = (event: SelectChangeEvent) => {
         changeTheme(event.target.value as string);
         setTheme(event.target.value as string);
     };
+
+    const handleLogout = (_event: React.MouseEvent<HTMLButtonElement>) => {
+        removeCookies("token");
+        window.location.href = "/";
+    }
 
     useEffect(() => {
         setTheme(getCookie("NEXT_THEME") as string || "light");
@@ -38,13 +46,13 @@ const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
                         "Authorization": "Bearer "+t
                     }
                 });
-                console.log(res)
                 if (res.status === 401) {
                     setLoggedIn(false);
                     removeCookies("token")
                 }
             })();
-
+            let dec = jose.decodeJwt(getCookie("token").toString());
+            setUser(dec.sub)
         }
     }, []);
 
@@ -74,8 +82,9 @@ const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
                     <LoginButton variant="outlined" aria-label="login button">Zaloguj się</LoginButton>
                     <LoginButtonIcon color="primary" aria-label="login button"><LoginIcon/></LoginButtonIcon>
                 </LinkLogin>
-                <LinkUser $isLoggedIn={isLoggedIn} href="/notes" style={{textDecoration: "none"}}>
-                    <UserButtonIcon color="primary" aria-label="user button"><AccountIcon/></UserButtonIcon>
+                <LinkUser $isLoggedIn={isLoggedIn} style={{textDecoration: "none"}}>
+                    <UserNameDisplay>{user}</UserNameDisplay>
+                    <UserButtonIcon color="primary" aria-label="user button" onClick={handleLogout}><LogoutIcon/></UserButtonIcon>
                 </LinkUser>
             </NavBarLoginBox>
         </NavBarBox>

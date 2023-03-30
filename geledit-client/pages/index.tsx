@@ -1,9 +1,9 @@
+import NotesComponent from "../components/Index";
 
-
-const Index = () => {
+const Notes = () => {
     return <>
-        <h1>INDEX</h1>
+        <NotesComponent/>
     </>;
 }
 
-export default Index;
+export default Notes;

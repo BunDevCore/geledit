@@ -2,31 +2,21 @@ import React, {useEffect, useState} from "react";
 import {getCookie, removeCookies} from "cookies-next";
 import {TextField} from "@mui/material";
 import Button from "@mui/material/Button";
-import useSWR, { KeyedMutator } from "swr";
-import * as jose from "jose";
-import {FlexSpace, UserBox, NoteBox} from "../../styles/Notes/notes";
+import useSWR from "swr";
+import {UserBox, NoteLink, NoteName, NoteOwner, NoteInfo} from "../../styles/Notes/notes";
+import type {SWRReturn, Note} from "../../types/global";
 
 // @ts-ignore
 const fetcher = (...args: any[]) => fetch(...args).then((res) => res.json())
 
 const Notes = () => {
     const [noteName, setNoteName] = useState("");
-    const [token, setToken] = useState<string | undefined>(undefined);
-    const [user, setUser] = useState<string | undefined>(null);
+    const [token, setToken] = useState<string | undefined | null>(undefined);
 
     useEffect(() => {
-        let t: string | undefined = getCookie("token")?.toString();
-        setToken(t)
-        if (t !== undefined) {
-            let dec = jose.decodeJwt(t);
-            setUser(dec.sub)
-        }
+        let t = getCookie("token");
+        setToken(t?.toString())
     }, []);
-
-    const handleLogout = (_event: React.MouseEvent<HTMLButtonElement>) => {
-        removeCookies("token");
-        window.location.href = "/";
-    }
 
     const handleNewNote = (_event: React.MouseEvent<HTMLButtonElement>) => {
         let t = getCookie("token");
@@ -42,19 +32,27 @@ const Notes = () => {
                     "title": noteName
                 })
             });
-            console.log(res);
+            if (res.status == 401) {
+                removeCookies("token")
+                window.location.reload()
+            }
             await mutate();
         })();
-    };
-    const { data, error, isLoading, mutate }: {data: Note[] | undefined, error: any, isLoading: boolean, mutate: KeyedMutator<any>} = useSWR("http://localhost:5274/Note", fetcher);
+    }
+    const {data, error, isLoading, mutate}: SWRReturn<Note[]> = useSWR("http://localhost:5274/Note", fetcher);
 
     if (error) return <NoteInfo>Failed to load</NoteInfo>
 
     let notatki: JSX.Element | JSX.Element[] = [];
     if (data?.length > 0) {
         for (const notatka of data) {
-            notatki.push(<NoteBox key={notatka.id}>{notatka.title}</NoteBox>)
+            notatki.push(<NoteLink href={`/notes/${notatka.id}`} key={notatka.id}>
+                <NoteName>{notatka.title}</NoteName>
+                <NoteOwner>{notatka.owner}</NoteOwner>
+            </NoteLink>)
         }
+    } else {
+        notatki.push(<NoteInfo key={"empty"}>Nie ma notatek</NoteInfo>)
     }
 
     return <>
@@ -63,7 +61,7 @@ const Notes = () => {
                        onChange={(e) => setNoteName(e.target.value)}/>
             <Button style={{minWidth: "9rem"}} variant="contained" onClick={handleNewNote}>Nowa notatka</Button>
         </UserBox>
-        {isLoading ? <div>Loading...</div> : notatki}
+        {isLoading ? <NoteInfo key={"loading"}>Loading...</NoteInfo> : notatki}
     </>
 }
 

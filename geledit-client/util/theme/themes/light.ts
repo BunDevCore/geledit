@@ -23,6 +23,7 @@ const theme: Theme = {
     noteMenuBoxShadowColor: "gray",
     noteBackgroundColor: "#eee",
     noteBoxShadowColor: "gray",
+    noteText: "black",
 }
 
 export default theme;

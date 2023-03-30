@@ -1,5 +1,9 @@
-import { useRouter } from "next/router";
-import useSWR, { KeyedMutator } from "swr"
+import {useRouter} from "next/router";
+import useSWR, {KeyedMutator} from "swr";
+import type {Note, SWRReturn} from "../../types/global";
+import {getCookie, removeCookies} from "cookies-next";
+import React, {useEffect, useState} from "react";
+import {Switch} from "@mui/material";
 
 // @ts-ignore: fetch doesn't like spread params :( cry
 const fetcherGetNoteText = (key: string) => fetch(key).then((res) => res.json())
@@ -32,8 +36,6 @@ async function fetcherPostNoteText(key: string, content: string) {
     return await res.json();
 }
 
-
-type SWRReturn = {data: Note, error: any, isLoading: boolean, mutate: KeyedMutator<any>}
 
 const NoteEdit = () => {
     const router = useRouter();
