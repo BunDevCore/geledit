@@ -178,7 +178,7 @@ public class NoteController : ControllerBase
         _logger.LogInformation("uname: {UserId} owner: {OwnerUserName} >>", userId, note?.Owner.UserName);
 
 
-        if (userId != note?.Owner.UserName || note?.Guests.FirstOrDefault(x => x.UserName == userId) == null)
+        if (userId != note?.Owner.UserName && note?.Guests.FirstOrDefault(x => x.UserName == userId) == null)
         {
             return Unauthorized("you have no write permissions for this note");
         }
