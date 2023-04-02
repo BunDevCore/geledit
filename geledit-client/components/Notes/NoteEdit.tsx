@@ -58,6 +58,7 @@ const NoteEdit = () => {
 
     const handleErrorClose = () => {
         setErrorDialogOpen(false);
+        setEditMode(false);
     };
 
 
