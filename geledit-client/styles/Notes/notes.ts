@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Link from "next/link";
+import IconButton from "@mui/material/IconButton";
 
 export const UserBox = styled.div`
   display: flex;
@@ -26,7 +26,7 @@ export const UserBox = styled.div`
   }
 `;
 
-export const NoteLink = styled(Link)`
+export const NoteLink = styled.div`
   display: flex;
   border-radius: 3rem;
   background-color: ${props => props.theme.noteBackgroundColor};
@@ -36,19 +36,30 @@ export const NoteLink = styled(Link)`
   justify-self: center;
   min-width: 30rem;
   color: ${props => props.theme.navbarText};
-  flex-direction: column;
+  flex-direction: row;
   text-decoration: none;
-  align-items: flex-start;
+  
+  a:first-child {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    align-items: flex-start;
+    width: 100%;
+    color: ${props => props.theme.navbarText};
+  }
 
   @media (max-width: 800px) {
     min-width: 100%;
   }
 `;
 
+export const FlexSpace = styled.div`
+  flex-grow: 1;
+`;
+
 export const NoteName = styled.p`
   font-weight: bold;
   font-size: 2rem;
-  margin-top: 1rem;
 `;
 
 export const NoteOwner = styled.p``;
@@ -66,4 +77,8 @@ export const NoteInfo = styled.div`
   @media (max-width: 800px) {
     min-width: 100%;
   }
+`;
+
+export const DelButtonIcon = styled(IconButton)`
+  margin-left: 1rem;
 `;

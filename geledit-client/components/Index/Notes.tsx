@@ -3,8 +3,11 @@ import {getCookie, removeCookies} from "cookies-next";
 import {TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import useSWR from "swr";
-import {UserBox, NoteLink, NoteName, NoteOwner, NoteInfo} from "../../styles/Notes/notes";
+import {UserBox, NoteLink, NoteName, NoteOwner, NoteInfo, DelButtonIcon, FlexSpace} from "../../styles/Notes/notes";
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import type {SWRReturn, Note} from "../../types/global";
+import * as jose from "jose";
+import Link from "next/link";
 
 // @ts-ignore
 const fetcher = (...args: any[]) => fetch(...args).then((res) => res.json())
@@ -12,10 +15,15 @@ const fetcher = (...args: any[]) => fetch(...args).then((res) => res.json())
 const Notes = () => {
     const [noteName, setNoteName] = useState("");
     const [token, setToken] = useState<string | undefined | null>(undefined);
+    const [user, setUser] = useState<string | undefined | null>(undefined);
 
     useEffect(() => {
         let t = getCookie("token");
         setToken(t?.toString())
+        if (t !== undefined) {
+            let dec = jose.decodeJwt(getCookie("token").toString());
+            setUser(dec.sub)
+        }
     }, []);
 
     const handleNewNote = (_event: React.MouseEvent<HTMLButtonElement>) => {
@@ -41,14 +49,40 @@ const Notes = () => {
     }
     const {data, error, isLoading, mutate}: SWRReturn<Note[]> = useSWR("http://localhost:5274/Note", fetcher);
 
+    const handleRemove = (id: number) => {
+        let t = getCookie("token");
+        (async () => {
+            await fetch(`http://localhost:5274/Note/${id}`, {
+                method: "DELETE",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + t
+                }
+            });
+            await mutate();
+        })();
+    }
+
     if (error) return <NoteInfo>Failed to load</NoteInfo>
 
     let notatki: JSX.Element | JSX.Element[] = [];
     if (data?.length > 0) {
         for (const notatka of data) {
-            notatki.push(<NoteLink href={`/notes/${notatka.id}`} key={notatka.id}>
-                <NoteName>{notatka.title}</NoteName>
-                <NoteOwner>{notatka.owner}</NoteOwner>
+            console.log(notatka.owner)
+            console.log(user)
+            notatki.push(<NoteLink key={notatka.id}>
+                <Link href={`/notes/${notatka.id}`}>
+                    <NoteName>{notatka.title}</NoteName>
+                    <NoteOwner>{notatka.owner}</NoteOwner>
+                </Link>
+                <FlexSpace/>
+                <div>
+                    {notatka.owner !== user ||
+                        <DelButtonIcon color="primary" aria-label="del button" onClick={() => handleRemove(notatka.id)}>
+                            <DeleteForeverIcon/>
+                        </DelButtonIcon>}
+                </div>
             </NoteLink>)
         }
     } else {
