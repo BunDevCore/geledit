@@ -41,6 +41,10 @@ async function tryPostNoteText(key: string, newNote: { content: string, title: s
     return [await res.text(), res.status]
 }
 
+const errors: Map<number, (note: Note) => string> = new Map([
+    [401, (note) => "Nie masz uprawnień do edycji tej notatki."],
+    [409, (note: Note) => `Notatka jest teraz edytowana przez użytkownika ${note.currentEditor}.`]
+])
 
 const NoteEdit = () => {
     const router = useRouter();
@@ -126,13 +130,18 @@ const NoteEdit = () => {
     if (isLoading) return <p>Loading ...</p>
     if (error) return <p>error loading data :(</p>
 
+    function getErrorMessage() {
+        return errors.get(refreshSWR.error) ? errors.get(refreshSWR.error)?.call(this, data) : "Wystąpił nieokreślony błąd";
+    }
+
     return <div>
         <textarea value={noteText as string} readOnly={!editMode} onChange={handleNoteTextChange}></textarea>
         <Switch aria-label={'Edit mode'} checked={editMode} onChange={handleEditModeChange}/>
         {lastSaveTime == null ? <></> : <LastSavedInfo>last saved on {dateString}</LastSavedInfo>}
         <Dialog open={errorDialogOpen} disablePortal onClose={handleErrorClose}>
             <DialogTitle>Error {refreshSWR.error}</DialogTitle>
-            <DialogContent>Nie można otworzyć notatki do zapisu. Tryb edycji zostanie wyłączony.</DialogContent>
+            <DialogContent>{getErrorMessage()} Nie można
+                otworzyć notatki do zapisu. Tryb edycji zostanie wyłączony.</DialogContent>
             <DialogActions>
                 <Button onClick={handleErrorClose} autoFocus>OK</Button>
             </DialogActions>
