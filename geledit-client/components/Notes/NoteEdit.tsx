@@ -1,9 +1,9 @@
 import {useRouter} from "next/router";
-import useSWR, {KeyedMutator} from "swr";
+import useSWR from "swr";
 import type {Note, SWRReturn} from "../../types/global";
-import {getCookie, removeCookies} from "cookies-next";
+import {getCookie} from "cookies-next";
 import React, {useEffect, useRef, useState} from "react";
-import {Switch} from "@mui/material";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Switch} from "@mui/material";
 import {LastSavedInfo} from "../../styles/Notes/noteedit";
 
 // @ts-ignore: fetch doesn't like spread params :( cry
@@ -21,6 +21,9 @@ async function fetcherRefreshOwnership(key: string) {
 
         credentials: "same-origin",
     });
+    if (!res.ok) {
+        throw res.status
+    }
     return await res.json();
 }
 
@@ -47,6 +50,16 @@ const NoteEdit = () => {
     const [lastSaveTime, setLastSaveTime] = useState(null as number | null)
     const [lastEditTime, setLastEditTime] = useState(null as number | null)
     const typesaveId = useRef<number | null>(null)
+    const [errorDialogOpen, setErrorDialogOpen] = React.useState(false);
+
+    const handleErrorOpen = () => {
+        setErrorDialogOpen(true);
+    };
+
+    const handleErrorClose = () => {
+        setErrorDialogOpen(false);
+    };
+
 
     const {
         data,
@@ -72,7 +85,7 @@ const NoteEdit = () => {
     function saveNoteText() {
         (async () => {
             const [newNote, status] = await tryPostNoteText(`http://localhost:5274/Note/${id}`, {
-                title: data.title,
+                title: data!.title,
                 content: noteText
             });
             if (status !== 200) {
@@ -95,6 +108,10 @@ const NoteEdit = () => {
     }, [data])
 
     useEffect(() => {
+        if (refreshSWR.error) handleErrorOpen();
+    }, [refreshSWR.error])
+
+    useEffect(() => {
         console.log("type save")
         typesaveId.current = setTimeout(() => {
                 if (editMode) saveNoteText()
@@ -104,6 +121,7 @@ const NoteEdit = () => {
         return () => clearTimeout(typesaveId.current as number)
     }, [editMode, noteText])
 
+
     if (isLoading) return <p>Loading ...</p>
     if (error) return <p>error loading data :(</p>
 
@@ -111,6 +129,13 @@ const NoteEdit = () => {
         <textarea value={noteText as string} readOnly={!editMode} onChange={handleNoteTextChange}></textarea>
         <Switch aria-label={'Edit mode'} checked={editMode} onChange={handleEditModeChange}/>
         {lastSaveTime == null ? <></> : <LastSavedInfo>last saved on {dateString}</LastSavedInfo>}
+        <Dialog open={errorDialogOpen} disablePortal onClose={handleErrorClose}>
+            <DialogTitle>Error {refreshSWR.error}</DialogTitle>
+            <DialogContent>Nie można otworzyć notatki do zapisu. Tryb edycji zostanie wyłączony.</DialogContent>
+            <DialogActions>
+                <Button onClick={handleErrorClose} autoFocus>OK</Button>
+            </DialogActions>
+        </Dialog>
     </div>
 }
 
