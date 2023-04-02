@@ -1,6 +1,7 @@
 import {KeyedMutator} from "swr";
 
 export type Note = {
+    currentEditor: string | null;
     id: number,
     owner: string,
     title: string,
