@@ -11,7 +11,14 @@ export interface Theme {
 
     // index
 
-    //login
+    // login
     loginBackgroundColor: string
     loginBoxShadowColor: string
+
+    // notes
+    noteMenuBackgroundColor: string
+    noteMenuBoxShadowColor: string
+    noteBackgroundColor: string
+    noteBoxShadowColor: string
+    noteText: string
 }

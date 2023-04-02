@@ -9,15 +9,31 @@ const theme: Theme = {
         palette: {
             primary: {
                 main: "#17beff"
+            },
+            text: {
+                primary: "#fff",
+                secondary: "#063e5c",
+            },
+            background: {
+                paper: "#063e5c"
             }
         }
     }),
     type: "dark",
 
-    background: "#34c4f8",
+    background: "#093147",
 
-    navbarBackgroundColor: "#0075b7",
+    navbarBackgroundColor: "#063e5c",
     navbarText: "#fff",
+
+    loginBackgroundColor: "#eee",
+    loginBoxShadowColor: "#063e5c",
+
+    noteMenuBackgroundColor: "#063e5c",
+    noteMenuBoxShadowColor: "#0006",
+    noteBackgroundColor: "#063e5c",
+    noteBoxShadowColor: "#0006",
+    noteText: "white",
 }
 
 export default theme;

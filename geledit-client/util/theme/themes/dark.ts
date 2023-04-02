@@ -27,6 +27,12 @@ const theme: Theme = {
 
     loginBackgroundColor: "#444",
     loginBoxShadowColor: "#333",
+
+    noteMenuBackgroundColor: "#444",
+    noteMenuBoxShadowColor: "#333",
+    noteBackgroundColor: "#444",
+    noteBoxShadowColor: "#333",
+    noteText: "white",
 }
 
 export default theme;

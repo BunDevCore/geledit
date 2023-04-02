@@ -4,25 +4,56 @@ import {
     NavBarNameLink,
     NavBarLoginBox,
     LoginButtonIcon,
-    LoginButton
+    LoginButton,
+    UserButtonIcon,
+    LinkLogin,
+    LinkUser,
+    UserNameDisplay
 } from "styles/Navbar/navbar";
 import {FormControl, MenuItem, Select, SelectChangeEvent} from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
-import {getCookie} from "cookies-next";
-import {useEffect, useState} from "react";
-import Link from "next/link";
+import LogoutIcon from '@mui/icons-material/Logout';
+import {getCookie, removeCookies} from "cookies-next";
+import React, {useEffect, useState} from "react";
 import type {ChangeTheme} from "types/navbar";
+import * as jose from "jose";
 
 const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
     const [currTheme, setTheme] = useState("light");
+    const [isLoggedIn, setLoggedIn] = useState(false);
+    const [user, setUser] = useState<string | undefined>("");
 
     const handleChangeTheme = (event: SelectChangeEvent) => {
         changeTheme(event.target.value as string);
         setTheme(event.target.value as string);
     };
 
+    const handleLogout = (_event: React.MouseEvent<HTMLButtonElement>) => {
+        removeCookies("token");
+        window.location.href = "/";
+    }
+
     useEffect(() => {
-        setTheme(getCookie("NEXT_THEME") as string || "light")
+        setTheme(getCookie("NEXT_THEME") as string || "light");
+        let t = getCookie("token");
+        if (t !== undefined) {
+            setLoggedIn(true);
+            (async () => {
+                let res = await fetch("http://localhost:5274/private", {
+                    method: "GET",
+                    mode: "cors",
+                    headers: {
+                        "Authorization": "Bearer "+t
+                    }
+                });
+                if (res.status === 401) {
+                    setLoggedIn(false);
+                    removeCookies("token")
+                }
+            })();
+            let dec = jose.decodeJwt(getCookie("token").toString());
+            setUser(dec.sub)
+        }
     }, []);
 
     return <>
@@ -47,10 +78,14 @@ const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
                 </Select>
             </FormControl>
             <NavBarLoginBox>
-                <Link href="/login" style={{textDecoration: "none"}}>
+                <LinkLogin $isLoggedIn={isLoggedIn} href="/login" style={{textDecoration: "none"}}>
                     <LoginButton variant="outlined" aria-label="login button">Zaloguj się</LoginButton>
                     <LoginButtonIcon color="primary" aria-label="login button"><LoginIcon/></LoginButtonIcon>
-                </Link>
+                </LinkLogin>
+                <LinkUser $isLoggedIn={isLoggedIn} style={{textDecoration: "none"}}>
+                    <UserNameDisplay>{user}</UserNameDisplay>
+                    <UserButtonIcon color="primary" aria-label="user button" onClick={handleLogout}><LogoutIcon/></UserButtonIcon>
+                </LinkUser>
             </NavBarLoginBox>
         </NavBarBox>
     </>

@@ -44,3 +44,22 @@ export const LoginButtonIcon = styled(IconButton)`
     display: none;
   }
 `;
+
+export const LinkLogin = styled(Link)`
+  display: ${props => props.$isLoggedIn ? "none" : ""};
+`;
+
+export const LinkUser = styled.div`
+  display: ${props => // @ts-ignore it is resolved 😢
+          props.$isLoggedIn ? "flex" : "none"};
+  align-items: center;
+  justify-items: center;
+`;
+
+export const UserButtonIcon = styled(IconButton)`
+  margin-left: 1rem;
+`;
+
+export const UserNameDisplay = styled.p`
+    color: ${props => props.theme.navbarText}
+`;
