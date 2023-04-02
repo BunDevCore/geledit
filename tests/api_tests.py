@@ -1,3 +1,5 @@
+import uuid
+
 import requests
 
 base_url = "http://localhost:5274"
@@ -86,7 +88,7 @@ def add_guest_to_note(headers, note_id, username):
     add_guest_url = base_url + f"/Note/{note_id}/guest"
     response = requests.post(
         add_guest_url,
-        json=username,
+        json={"username": username},
         headers=headers
     )
     if response.status_code == 200:
@@ -111,9 +113,10 @@ def delete_guest_from_note(headers, note_id, username):
         print(f"Error [delete_guest_from_note] {response.content}")
         exit()
 
-
-user = "strinasdassag"
-user2 = "usernumeroduo"
+# removing the last 2 characters of the uuid because the database is limited to 30 characters on a username
+user = str(uuid.uuid4()).replace("-", "")[:30]
+user2 = str(uuid.uuid4()).replace("-", "")[:30]
+print(f'user1 username: {user}, user2 username: {user2}')
 
 token = register(user, "stringify")
 token2 = register(user2, "usernameIsHere...Right?")

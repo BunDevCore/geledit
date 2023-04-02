@@ -9,6 +9,7 @@ public class ReturnNoteDto
     public string Title { get; set; }
     public string? Content { get; set; }
     public IEnumerable<string?> Guests { get; set; }
+    public string? CurrentEditor { get; set; }
 
     public static ReturnNoteDto FromNote(Note note, bool includeContent)
     {
@@ -19,6 +20,7 @@ public class ReturnNoteDto
             Owner = note.Owner.UserName!,
             Title = note.Title,
             Guests = note.Guests.Select(u => u.UserName),
+            CurrentEditor = note.CurrentEditor?.UserName
         };
     }
 }
