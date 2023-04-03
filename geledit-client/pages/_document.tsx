@@ -1,4 +1,4 @@
-import Document, { DocumentContext } from 'next/document'
+import Document, {DocumentContext} from 'next/document'
 import {ServerStyleSheet} from 'styled-components'
 
 export default class Doc extends Document {

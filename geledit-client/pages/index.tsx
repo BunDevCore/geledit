@@ -1,9 +1,7 @@
 import NotesComponent from "../components/Index";
 
 const Notes = () => {
-    return <>
-        <NotesComponent/>
-    </>;
+    return <NotesComponent/>
 }
 
 export default Notes;
