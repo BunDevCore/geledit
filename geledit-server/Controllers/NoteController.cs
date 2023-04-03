@@ -136,6 +136,7 @@ public class NoteController : ControllerBase
     [HttpDelete("{id}/guest")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Note))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> DeleteGuest([FromRoute] long id, [FromBody] UsernameDto usernameDto)
     {
         var note = await _db.Notes.Include(x => x.Owner).Include(n => n.Guests).FirstOrDefaultAsync(x => x.Id == id);
@@ -163,8 +164,7 @@ public class NoteController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost]
-    [Route("{id}/refresh")]
+    [HttpPost("{id}/refresh")]
     public async Task<IActionResult> RefreshOwnership(long id)
     {
         var note = await _db.Notes.Include(x => x.Owner).Include(n => n.Guests).FirstOrDefaultAsync(x => x.Id == id);
@@ -198,8 +198,7 @@ public class NoteController : ControllerBase
         return Ok(ReturnNoteDto.FromNote(note, true));
     }
 
-    [Route("{id}")]
-    [HttpPost]
+    [HttpPost("{id}")]
     [Authorize]
     public async Task<IActionResult> ChangeContent(long id, [FromBody] UpdateNoteDto updateNoteDto)
     {
