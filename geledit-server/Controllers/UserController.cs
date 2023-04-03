@@ -21,11 +21,10 @@ public class UserController : ControllerBase
         _db = db;
     }
 
-    [HttpGet]
-    [Route("byUsername/{username}")]
+    [HttpGet("byUsername/{username}")]
     [ProducesResponseType(200, Type = typeof(UserDto))]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> ByUsername(string username)
+    public async Task<IActionResult> ByUsername([FromRoute]string username)
     {
         var userId = _userManager.GetUserId(User);
         var dbUser = await _db.Users.FirstOrDefaultAsync(x => x.UserName == userId);

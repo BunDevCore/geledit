@@ -30,8 +30,9 @@ public class AuthController : ControllerBase
         _userManager = userManager;
     }
 
-    [HttpPost]
-    [Route("login")]
+    [HttpPost("login")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Login([FromBody] RegisterDto dto)
     {
         if (!ModelState.IsValid)
@@ -56,8 +57,10 @@ public class AuthController : ControllerBase
 
     }
 
-    [HttpPost]
-    [Route("register")]
+    [HttpPost("register")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
     public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
         if (!ModelState.IsValid)
