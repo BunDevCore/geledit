@@ -57,6 +57,7 @@ const Login = () => {
                     "password": pass
                 })
             });
+            console.log(res.status)
             if (res.status === 400) {
                 setPassLabel("Błędny login lub hasło")
                 return;
@@ -70,6 +71,16 @@ const Login = () => {
             }
         })();
     };
+
+    const handleKeyUp = (event) => {
+        if (event.key === "Enter") {
+            if (login === 0) {
+                handleLogin(event)
+            } else {
+                handleRegister(event)
+            }
+        }
+    }
 
     const handleRegister = (_event: React.MouseEvent<HTMLButtonElement>) => {
         setLoginLabel("Wpisz swoją nazwę")
@@ -130,13 +141,14 @@ const Login = () => {
             </Box>
             <LoginDataBox>
                 <TextField id="login-name" label="Login" variant="filled" helperText={loginLabel} required
-                           error={loginLabel !== "Wpisz swoją nazwę"} onChange={(e) => setUser(e.target.value)}/>
+                           error={loginLabel !== "Wpisz swoją nazwę"} onChange={(e) => setUser(e.target.value)} onKeyUp={handleKeyUp}/>
                 <TextField id="login-password" label="Hasło" variant="filled" helperText={passLabel} type="password" required
-                           error={passLabel !== ""} onChange={(e) => setPass(e.target.value)}/>
+                           error={passLabel !== ""} onChange={(e) => setPass(e.target.value)} onKeyUp={handleKeyUp}/>
                 <Button sx={{display: login === 1 ? "none" : ""}} variant="contained" onClick={handleLogin}>Zaloguj się</Button>
                 <TextField sx={{display: login === 0 ? "none" : ""}} id="login-password-again" label="Powtórz hasło" variant="filled" type="password" required
-                           error={pass !== passAgain} onChange={(e) => setPassAgain(e.target.value)}/>
-                <Button sx={{display: login === 0 ? "none" : ""}} variant="contained" onClick={handleRegister}>Zarejestruj się</Button>
+                           error={pass !== passAgain} onChange={(e) => setPassAgain(e.target.value)} onKeyUp={handleKeyUp}/>
+                <Button sx={{display: login === 0 ? "none" : ""}} variant="contained" onClick={handleRegister}
+                        >Zarejestruj się</Button>
             </LoginDataBox>
         </LoginBox>
     </>
