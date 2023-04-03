@@ -121,8 +121,11 @@ const NoteEdit = () => {
     const dateString = new Date(lastSaveTime).toLocaleString();
 
     useEffect(() => {
-        let dec = jose.decodeJwt(getCookie("token").toString());
-        setUserNow(dec.sub as string);
+        let t = getCookie("token")
+        if (t && t !== undefined) {
+            let dec = jose.decodeJwt(t.toString());
+            setUserNow(dec.sub as string);
+        }
         setTimeout(() => {
             let ta = document.getElementById("note-text");
             if (ta !== null) {
