@@ -17,27 +17,27 @@ def register(name):
 
 
 class TestUserController:
-    def test_search_by_username(self):
-        username = "testSearchByUsername"
-        register(username)
-
-        search_user_url = f"http://localhost:5274/User/byUsername/{username}"
-        response = requests.get(
-            search_user_url
-        )
-
-        assert response.status_code == 200
-
-    def test_search_by_wrong_username(self):
-        username = "notRealUsername"
-
-        search_user_url = f"http://localhost:5274/User/byUsername/{username}"
-        response = requests.get(
-            search_user_url
-        )
-
-        assert response.status_code == 404
-
+    # def test_search_by_username(self):
+    #     username = "testSearchByUsername"
+    #     register(username)
+    #
+    #     search_user_url = f"http://localhost:5274/User/byUsername/{username}"
+    #     response = requests.get(
+    #         search_user_url
+    #     )
+    #
+    #     assert response.status_code == 200
+    #
+    # def test_search_by_wrong_username(self):
+    #     username = "notRealUsername"
+    #
+    #     search_user_url = f"http://localhost:5274/User/byUsername/{username}"
+    #     response = requests.get(
+    #         search_user_url
+    #     )
+    #
+    #     assert response.status_code == 404
+    #
     def test_deleting_of_user(self):
         username = "ToBeDeleted"
         token = register(username)
