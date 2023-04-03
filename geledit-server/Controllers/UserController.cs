@@ -39,4 +39,14 @@ public class UserController : ControllerBase
             OwnedNotes = dbUser.OwnedNotes.Select(x => ReturnNoteDto.FromNote(x, false)).ToList()
         });
     }
+
+    [HttpGet]
+    public IEnumerable<UserDto> Get()
+    {
+        return _db.Users.Local.Select(user => new UserDto
+        {
+            Username = user.UserName,
+            OwnedNotes = user.OwnedNotes.Select(x => ReturnNoteDto.FromNote(x, false)).ToList()
+        });
+    }
 }
