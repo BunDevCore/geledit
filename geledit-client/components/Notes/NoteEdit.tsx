@@ -4,7 +4,17 @@ import type {Note, SWRReturn} from "../../types/global";
 import {getCookie} from "cookies-next";
 import React, {useEffect, useRef, useState} from "react";
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Switch} from "@mui/material";
-import {LastSavedInfo} from "../../styles/Notes/noteedit";
+import {
+    EditModeText,
+    FileNameText,
+    LastSavedInfo,
+    NoteBox,
+    OptionBox,
+    InfoBox
+} from "../../styles/Notes/noteedit";
+import {FlexSpace} from "../../styles/Notes/notes";
+import Link from "next/link";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 // @ts-ignore: fetch doesn't like spread params :( cry
 const fetcherGetNoteText = (key: string) => fetch(key).then((res) => res.json())
@@ -102,12 +112,27 @@ const NoteEdit = () => {
     const handleNoteTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setNoteText(event.target.value)
         setLastEditTime(Date.now())
+        event.currentTarget.style.height = "auto";
+        event.currentTarget.style.height = `${event.target.scrollHeight}px`;
     }
 
     const dateString = new Date(lastSaveTime).toLocaleString();
 
     useEffect(() => {
-        if (data) setNoteText(data.content);
+        setTimeout(() => {
+            let ta = document.getElementById("note-text");
+            if (ta !== null) {
+                ta.style.height = "10px";
+                ta.style.height = (ta.scrollHeight) + "px";
+            }
+        }, 1000)
+    }, [])
+
+    useEffect(() => {
+        if (data) {
+            setNoteText(data.content)
+            document.title = `Geledit - ${data.title}`;
+        }
     }, [data])
 
     useEffect(() => {
@@ -124,18 +149,28 @@ const NoteEdit = () => {
         return () => clearTimeout(typesaveId.current as number)
     }, [editMode, noteText])
 
-
-    if (isLoading) return <p>Loading ...</p>
-    if (error) return <p>error loading data :(</p>
+    if (error) return <InfoBox>
+        <p>Note not found</p>
+    </InfoBox>
 
     function getErrorMessage() {
         return errors.get(refreshSWR.error) ? errors.get(refreshSWR.error)?.call(this, data) : "Wystąpił nieokreślony błąd";
     }
 
-    return <div>
-        <textarea value={noteText as string} readOnly={!editMode} onChange={handleNoteTextChange}></textarea>
-        <Switch aria-label={'Edit mode'} checked={editMode} onChange={handleEditModeChange}/>
-        {lastSaveTime == null ? <></> : <LastSavedInfo>last saved on {dateString}</LastSavedInfo>}
+    return <>
+        <OptionBox>
+            <FileNameText>{data?.title}</FileNameText><EditModeText>| Tryb Edycji</EditModeText> <Switch
+            aria-label={'Edit mode'} checked={editMode} onChange={handleEditModeChange}/>
+            {lastSaveTime == null ? <></> : <LastSavedInfo>Zapisano {dateString}</LastSavedInfo>}
+            <FlexSpace/>
+            <Link href={`./${data?.id}/settings`} style={{textDecoration: "none"}}><Button style={{minWidth: "6rem"}} variant="contained" type="submit">
+                <SettingsIcon sx={{marginRight: "0.25rem"}}/>Ustawienia
+            </Button></Link>
+        </OptionBox>
+        {isLoading ? <InfoBox><p>Loading...</p></InfoBox> : <NoteBox>
+            <textarea id="note-text" value={noteText as string} readOnly={!editMode}
+                      onChange={handleNoteTextChange}></textarea>
+        </NoteBox>}
         <Dialog open={errorDialogOpen} disablePortal onClose={handleErrorClose}>
             <DialogTitle>Error {refreshSWR.error}</DialogTitle>
             <DialogContent>{getErrorMessage()} Nie można
@@ -144,7 +179,7 @@ const NoteEdit = () => {
                 <Button onClick={handleErrorClose} autoFocus>OK</Button>
             </DialogActions>
         </Dialog>
-    </div>
+    </>
 }
 
 export default NoteEdit;
