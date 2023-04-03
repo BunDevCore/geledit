@@ -113,7 +113,24 @@ def delete_guest_from_note(headers, note_id, username):
         print(f"Error [delete_guest_from_note] {response.content}")
         exit()
 
+def delete_user(headers, username):
+    delete_user_url = base_url + f"/User/{username}"
+    response = requests.delete(
+        delete_user_url,
+        json={
+            "username": username
+        },
+        headers=headers
+    )
+
+    if response.status_code == 200:
+        print(f"User: {username} was deleted from databse")
+    else:
+        print(f"Error [delete_user] {response.content}")
+        exit()
+
 # removing the last 2 characters of the uuid because the database is limited to 30 characters on a username
+
 user = str(uuid.uuid4()).replace("-", "")[:30]
 user2 = str(uuid.uuid4()).replace("-", "")[:30]
 print(f'user1 username: {user}, user2 username: {user2}')
@@ -137,6 +154,8 @@ get_note(headers, note)
 delete_guest_from_note(headers, note, user2)
 
 delete_note(headers, note2)
+
+delete_user(headers, "string")
 
 # print(response)
 # print(response.headers)
