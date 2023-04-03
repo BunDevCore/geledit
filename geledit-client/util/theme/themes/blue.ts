@@ -12,7 +12,7 @@ const theme: Theme = {
             },
             text: {
                 primary: "#fff",
-                secondary: "#063e5c",
+                secondary: "#3190bb",
             },
             background: {
                 paper: "#063e5c"
