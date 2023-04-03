@@ -29,6 +29,7 @@ const Notes = () => {
     const handleNewNote = (_event: React.MouseEvent<HTMLButtonElement>) => {
         let t = getCookie("token");
         (async () => {
+            if (noteName.trim() === "") return;
             let res = await fetch("http://localhost:5274/Note/new", {
                 method: "POST",
                 mode: "cors",
