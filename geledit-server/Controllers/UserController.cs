@@ -39,4 +39,10 @@ public class UserController : ControllerBase
             OwnedNotes = dbUser.OwnedNotes.Select(x => ReturnNoteDto.FromNote(x, false)).ToList()
         });
     }
+
+    [HttpGet("all")]
+    public async Task<IEnumerable<string>> GetAll()
+    {
+        return _db.Users.Select(u => u.UserName!);
+    }
 }
