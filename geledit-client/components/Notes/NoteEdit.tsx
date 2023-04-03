@@ -93,9 +93,7 @@ const NoteEdit = () => {
                 title: data!.title,
                 content: noteText
             });
-            if (status !== 200) {
-
-            } else {
+            if (status === 200) {
                 setLastSaveTime(Date.now());
             }
         })();
