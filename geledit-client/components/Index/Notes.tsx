@@ -92,8 +92,11 @@ const Notes = () => {
     return <>
         <UserBox style={{display: token === undefined ? "none" : ""}}>
             <TextField style={{width: "100%"}} id="note-name" label="Nazwa notatki" variant="filled" required
-                       onChange={(e) => setNoteName(e.target.value)}/>
-            <Button style={{minWidth: "9rem"}} variant="contained" onClick={handleNewNote}>Nowa notatka</Button>
+                       onChange={(e) => setNoteName(e.target.value)} onKeyUp={(e) => {
+                if (e.key === "Enter") handleNewNote(null!)
+            }}/>
+            <Button style={{minWidth: "9rem"}} variant="contained" onClick={handleNewNote} type="submit">Nowa
+                notatka</Button>
         </UserBox>
         {isLoading ? <NoteInfo key={"loading"}>Loading...</NoteInfo> : notatki}
     </>
