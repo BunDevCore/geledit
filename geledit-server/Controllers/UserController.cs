@@ -24,19 +24,21 @@ public class UserController : ControllerBase
     [HttpGet("byUsername/{username}")]
     [ProducesResponseType(200, Type = typeof(UserDto))]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> ByUsername([FromRoute]string username)
+    public async Task<IActionResult> ByUsername([FromRoute] UsernameDto dto)
     {
-        var userId = _userManager.GetUserId(User);
-        var dbUser = await _db.Users.FirstOrDefaultAsync(x => x.UserName == userId);
+        var dbUser = await _db.Users.FirstOrDefaultAsync(x => x.UserName == dto.username);
         if (dbUser == null)
         {
-            return NotFound();
+            return NotFound("user does not exist");
         }
-
-        return new OkObjectResult(new UserDto
+        
+        return Ok(new UserDto
         {
-            Username = username,
-            OwnedNotes = dbUser.OwnedNotes.Select(x => ReturnNoteDto.FromNote(x, false)).ToList()
+            Username = dto.username,
+            // OwnedNotes = dbUser.OwnedNotes.Select(x => ReturnNoteDto.FromNote(x, false)).ToList()
+            // it can work but I can't remember how to make it work.. -wKp
+            OwnedNotes = new List<ReturnNoteDto>()
+            
         });
     }
 
@@ -58,7 +60,7 @@ public class UserController : ControllerBase
         {
             return NotFound("user does not exist");
         }
-        
+
         var userId = _userManager.GetUserId(User);
         if (user.UserName != userId)
         {
@@ -67,7 +69,7 @@ public class UserController : ControllerBase
 
         _db.Users.Remove(user);
         await _db.SaveChangesAsync();
-        
+
         return Ok();
     }
 }
