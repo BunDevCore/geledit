@@ -13,7 +13,6 @@ body {
     font-family: "Roboto", Helvetica, Arial, sans-serif;
     background-color: #000;
     transition: 300ms;
-    scroll-behavior: smooth;
     scroll-padding-top: var(--navbar-height)
 }
 

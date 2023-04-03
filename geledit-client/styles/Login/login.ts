@@ -15,8 +15,6 @@ export const LoginDataBox = styled(Box)`
   gap: 1rem;
   flex-direction: column;
   & input {
-    background-color: white;
     border-radius: 4px 4px 0 0;
-    color: black;
   }
 `;

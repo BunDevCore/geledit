@@ -5,6 +5,11 @@ export interface Theme {
     type: string
     background: string
 
+    // defaults
+    defaultBackgroundColor: string
+    defaultBoxShadowColor: string
+    defaultText: string
+
     //navbar
     navbarBackgroundColor: string,
     navbarText: string,

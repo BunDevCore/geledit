@@ -19,15 +19,15 @@ const GlobalStyles = createGlobalStyle`
 const FlexBoxLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr min(60rem, 100%) 1fr;
-  
+
   @media (max-width: 1000px) {
     grid-template-columns: 1fr min(40rem, 100%) 1fr;
   }
-  
+
   @media (max-width: 700px) {
     grid-template-columns: 0 100% 0;
   }
-  
+
   > * {
     grid-column-start: 2
   }

@@ -8,6 +8,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import type {SWRReturn, Note} from "../../types/global";
 import * as jose from "jose";
 import Link from "next/link";
+import {useRouter} from "next/router";
 
 // @ts-ignore
 const fetcher = (...args: any[]) => fetch(...args).then((res) => res.json())
@@ -16,6 +17,7 @@ const Notes = () => {
     const [noteName, setNoteName] = useState("");
     const [token, setToken] = useState<string | undefined | null>(undefined);
     const [user, setUser] = useState<string | undefined | null>(undefined);
+    const router = useRouter()
 
     useEffect(() => {
         let t = getCookie("token");
@@ -29,6 +31,7 @@ const Notes = () => {
     const handleNewNote = (_event: React.MouseEvent<HTMLButtonElement>) => {
         let t = getCookie("token");
         (async () => {
+            if (noteName.trim() === "") return;
             let res = await fetch("http://localhost:5274/Note/new", {
                 method: "POST",
                 mode: "cors",
@@ -44,6 +47,9 @@ const Notes = () => {
                 removeCookies("token")
                 window.location.reload()
             }
+            const newId = await res.json();
+            console.log("a")
+            await router.push(`/notes/${newId}`)
             await mutate();
         })();
     }
@@ -92,8 +98,11 @@ const Notes = () => {
     return <>
         <UserBox style={{display: token === undefined ? "none" : ""}}>
             <TextField style={{width: "100%"}} id="note-name" label="Nazwa notatki" variant="filled" required
-                       onChange={(e) => setNoteName(e.target.value)}/>
-            <Button style={{minWidth: "9rem"}} variant="contained" onClick={handleNewNote}>Nowa notatka</Button>
+                       onChange={(e) => setNoteName(e.target.value)} onKeyUp={(e) => {
+                if (e.key === "Enter") handleNewNote(null!)
+            }}/>
+            <Button style={{minWidth: "9rem"}} variant="contained" onClick={handleNewNote} type="submit">Nowa
+                notatka</Button>
         </UserBox>
         {isLoading ? <NoteInfo key={"loading"}>Loading...</NoteInfo> : notatki}
     </>

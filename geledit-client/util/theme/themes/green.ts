@@ -23,6 +23,10 @@ const theme: Theme = {
 
     background: "#006000",
 
+    defaultBackgroundColor: "#007706",
+    defaultBoxShadowColor: "#0006",
+    defaultText: "white",
+
     navbarBackgroundColor: "#007706",
     navbarText: "#fff",
 
