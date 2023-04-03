@@ -85,7 +85,7 @@ const Notes = () => {
                 <FlexSpace/>
                 <div>
                     {notatka.owner !== user ||
-                        <DelButtonIcon color="primary" aria-label="del button" onClick={() => handleRemove(notatka.id)}>
+                        <DelButtonIcon color="error" aria-label="del button" onClick={() => handleRemove(notatka.id)}>
                             <DeleteForeverIcon/>
                         </DelButtonIcon>}
                 </div>
