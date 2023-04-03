@@ -1,5 +1,6 @@
 using geledit_server.Dtos;
 using geledit_server.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -44,5 +45,30 @@ public class UserController : ControllerBase
     public async Task<IEnumerable<string>> GetAll()
     {
         return _db.Users.Select(u => u.UserName!);
+    }
+
+    [Authorize]
+    [HttpDelete("{username}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    public async Task<IActionResult> DeleteUser([FromRoute] UsernameDto dto)
+    {
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.UserName == dto.username);
+        if (user == null)
+        {
+            return NotFound("user does not exist");
+        }
+        
+        var userId = _userManager.GetUserId(User);
+        if (user.UserName != userId)
+        {
+            return Unauthorized("only owner of the account can delete it");
+        }
+
+        _db.Users.Remove(user);
+        await _db.SaveChangesAsync();
+        
+        return Ok();
     }
 }
