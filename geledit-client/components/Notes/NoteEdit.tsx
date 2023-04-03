@@ -15,6 +15,7 @@ import {
 import {FlexSpace} from "../../styles/Notes/notes";
 import Link from "next/link";
 import SettingsIcon from "@mui/icons-material/Settings";
+import * as jose from "jose";
 
 // @ts-ignore: fetch doesn't like spread params :( cry
 const fetcherGetNoteText = (key: string) => fetch(key).then((res) => res.json())
@@ -63,6 +64,7 @@ const NoteEdit = () => {
     const [editMode, setEditMode] = useState(false)
     const [lastSaveTime, setLastSaveTime] = useState(null as number | null)
     const [lastEditTime, setLastEditTime] = useState(null as number | null)
+    const [userNow, setUserNow] = useState("")
     const typesaveId = useRef<number | null>(null)
     const [errorDialogOpen, setErrorDialogOpen] = React.useState(false);
 
@@ -119,6 +121,8 @@ const NoteEdit = () => {
     const dateString = new Date(lastSaveTime).toLocaleString();
 
     useEffect(() => {
+        let dec = jose.decodeJwt(getCookie("token").toString());
+        setUserNow(dec.sub as string);
         setTimeout(() => {
             let ta = document.getElementById("note-text");
             if (ta !== null) {
@@ -163,7 +167,7 @@ const NoteEdit = () => {
             aria-label={'Edit mode'} checked={editMode} onChange={handleEditModeChange}/>
             {lastSaveTime == null ? <></> : <LastSavedInfo>Zapisano {dateString}</LastSavedInfo>}
             <FlexSpace/>
-            <Link href={`./${data?.id}/settings`} style={{textDecoration: "none"}}><Button style={{minWidth: "6rem"}} variant="contained" type="submit">
+            <Link href={`./${data?.id}/settings`} style={{textDecoration: "none", display: data?.owner === userNow ? "" : "none"}}><Button style={{minWidth: "6rem"}} variant="contained" type="submit">
                 <SettingsIcon sx={{marginRight: "0.25rem"}}/>Ustawienia
             </Button></Link>
         </OptionBox>
