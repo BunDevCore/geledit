@@ -8,6 +8,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import type {SWRReturn, Note} from "../../types/global";
 import * as jose from "jose";
 import Link from "next/link";
+import {useRouter} from "next/router";
 
 // @ts-ignore
 const fetcher = (...args: any[]) => fetch(...args).then((res) => res.json())
@@ -16,6 +17,7 @@ const Notes = () => {
     const [noteName, setNoteName] = useState("");
     const [token, setToken] = useState<string | undefined | null>(undefined);
     const [user, setUser] = useState<string | undefined | null>(undefined);
+    const router = useRouter()
 
     useEffect(() => {
         let t = getCookie("token");
@@ -45,6 +47,9 @@ const Notes = () => {
                 removeCookies("token")
                 window.location.reload()
             }
+            const newId = await res.json();
+            console.log("a")
+            await router.push(`/notes/${newId}`)
             await mutate();
         })();
     }
