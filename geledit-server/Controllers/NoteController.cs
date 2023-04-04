@@ -37,7 +37,8 @@ public class NoteController : ControllerBase
         }
 
         var owned = _db.Notes.Where(n => n.Owner.UserName == username);
-        var dbUser = _db.Users.Include(u => u.IsGuestIn).ThenInclude(n => n.Owner).FirstOrDefault(u => u.UserName == username);
+        var dbUser = _db.Users.Include(u => u.IsGuestIn).ThenInclude(n => n.Owner)
+            .FirstOrDefault(u => u.UserName == username);
         _logger.LogInformation(dbUser.ToString());
         var guestIn = dbUser.IsGuestIn;
         _logger.LogInformation(guestIn.ToString());
@@ -45,6 +46,7 @@ public class NoteController : ControllerBase
         {
             _logger.LogInformation(note.Id.ToString());
         }
+
         return Enumerable.Concat(owned, guestIn).Select(note => new ReturnNoteDto
         {
             Content = null,
@@ -53,7 +55,7 @@ public class NoteController : ControllerBase
             Title = note.Title
         });
     }
-    
+
     [AllowAnonymous]
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Note))]
@@ -63,12 +65,12 @@ public class NoteController : ControllerBase
         var username = _userManager.GetUserId(User);
         var note = await _db.Notes.Include(x => x.Owner).Include(n => n.Guests).FirstOrDefaultAsync(x => x.Id == id);
 
-        if (note == null || (!note.Guests.Select(g => g.UserName).Contains(username) && note.Owner.UserName != username))
+        if (note == null ||
+            (!note.Guests.Select(g => g.UserName).Contains(username) && note.Owner.UserName != username))
         {
             return NotFound("note is nonexistent");
         }
 
-        
 
         return Ok(ReturnNoteDto.FromNote(note, true));
     }
@@ -145,6 +147,12 @@ public class NoteController : ControllerBase
         if (note == null)
         {
             return NotFound("note is nonexistent");
+        }
+
+        var userId = _userManager.GetUserId(User);
+        if (note.Owner.UserName != userId)
+        {
+            return Unauthorized("you are not owner of this note");
         }
 
         _db.Notes.Remove(note);
