@@ -134,8 +134,9 @@ const NoteSettings = () => {
                     "Authorization": "Bearer " + t
                 }
             });
+            await router.push("/");
+            window.location.reload();
         })();
-        window.location.replace("/");
     }
 
     return <>
