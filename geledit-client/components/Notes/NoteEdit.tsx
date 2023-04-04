@@ -32,6 +32,7 @@ async function fetcherRefreshOwnership(key: string) {
 
         credentials: "same-origin",
     });
+    console.log(`refresh got ${res.status}`)
     if (!res.ok) {
         throw res.status
     }
@@ -74,7 +75,7 @@ const NoteEdit = () => {
 
     const handleErrorClose = () => {
         setErrorDialogOpen(false);
-        setEditMode(false);
+        if (refreshSWR.error) setEditMode(false);
     };
 
 
@@ -91,7 +92,17 @@ const NoteEdit = () => {
 
     const refreshSWR: SWRReturn<Note> = useSWR(editMode ? `http://localhost:5274/Note/${id}/refresh` : null, fetcherRefreshOwnership, {
         refreshInterval: 10000,
-        keepPreviousData: true
+        keepPreviousData: true,
+        onError: (err, key, config) => {
+            console.log(`error=${err}`)
+            if (err == undefined) {
+                console.log("error is undefined")
+                return;
+            } else {
+                console.log("error is not undefined")
+                handleErrorOpen();
+            }
+        }
     });
 
     const handleEditModeChange = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
@@ -141,10 +152,6 @@ const NoteEdit = () => {
             document.title = `Geledit - ${data.title}`;
         }
     }, [data])
-
-    useEffect(() => {
-        if (refreshSWR.error) handleErrorOpen();
-    }, [refreshSWR.error])
 
     useEffect(() => {
         console.log("type save")
