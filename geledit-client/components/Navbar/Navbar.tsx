@@ -36,7 +36,7 @@ const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
     useEffect(() => {
         setTheme(getCookie("NEXT_THEME") as string || "light");
         let t = getCookie("token");
-        if (t !== undefined) {
+        if (t !== undefined && t !== null) {
             setLoggedIn(true);
             (async () => {
                 let res = await fetch("http://localhost:5274/private", {
@@ -51,7 +51,7 @@ const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
                     removeCookies("token")
                 }
             })();
-            let dec = jose.decodeJwt(getCookie("token").toString());
+            let dec = jose.decodeJwt(t.toString());
             setUser(dec.sub)
         }
     }, []);
