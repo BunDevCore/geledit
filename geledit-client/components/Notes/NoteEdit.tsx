@@ -19,7 +19,18 @@ import * as jose from "jose";
 import ReactMarkdown from "react-markdown";
 
 // @ts-ignore: fetch doesn't like spread params :( cry
-const fetcherGetNoteText = (key: string) => fetch(key).then((res) => res.json())
+//const fetcherGetNoteText = (key: string) => fetch(key).then((res) => res.json())
+
+const fetcherGetNoteText = (key: string) => {
+    const headers = getCookie("token") ? {
+        "Authorization": `Bearer ${getCookie("token")}`
+    } : {}
+
+
+    return fetch(key, {
+        "headers": headers as Record<string, string>
+    }).then((res) => res.json())
+}
 
 async function fetcherRefreshOwnership(key: string) {
     let t = getCookie("token");
