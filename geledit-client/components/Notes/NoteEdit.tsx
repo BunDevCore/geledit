@@ -137,6 +137,9 @@ const NoteEdit = () => {
             let dec = jose.decodeJwt(t.toString());
             setUserNow(dec.sub as string);
         }
+    }, [])
+
+    useEffect(() => {
         setTimeout(() => {
             let ta = document.getElementById("note-text");
             if (ta !== null) {
@@ -144,7 +147,7 @@ const NoteEdit = () => {
                 ta.style.height = (ta.scrollHeight) + "px";
             }
         }, 1000)
-    }, [])
+    }, [noteText])
 
     useEffect(() => {
         if (data) {
