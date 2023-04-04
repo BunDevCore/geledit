@@ -62,8 +62,6 @@ public class NoteController : ControllerBase
     {
         var username = _userManager.GetUserId(User);
         var note = await _db.Notes.Include(x => x.Owner).Include(n => n.Guests).FirstOrDefaultAsync(x => x.Id == id);
-        _logger.LogInformation(note.Owner.ToString());
-        _logger.LogInformation(username);
 
         if (note == null || (!note.Guests.Select(g => g.UserName).Contains(username) && note.Owner.UserName != username))
         {
