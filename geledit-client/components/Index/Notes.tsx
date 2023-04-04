@@ -31,7 +31,7 @@ const Notes = () => {
     useEffect(() => {
         let t = getCookie("token");
         setToken(t?.toString())
-        if (t !== undefined) {
+        if (t !== undefined && t !== null) {
             let dec = jose.decodeJwt(t.toString());
             setUser(dec.sub)
         }
