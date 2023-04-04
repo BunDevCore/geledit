@@ -16,6 +16,7 @@ import {FlexSpace} from "../../styles/Notes/notes";
 import Link from "next/link";
 import SettingsIcon from "@mui/icons-material/Settings";
 import * as jose from "jose";
+import ReactMarkdown from "react-markdown";
 
 // @ts-ignore: fetch doesn't like spread params :( cry
 const fetcherGetNoteText = (key: string) => fetch(key).then((res) => res.json())
@@ -83,7 +84,6 @@ const NoteEdit = () => {
         data,
         error,
         isLoading,
-        isValidating,
         mutate
     }: SWRReturn<Note> = useSWR(editMode ? null : `http://localhost:5274/Note/${id}`, fetcherGetNoteText, {
         refreshInterval: 3000,
@@ -129,7 +129,7 @@ const NoteEdit = () => {
         event.currentTarget.style.height = `${event.target.scrollHeight}px`;
     }
 
-    const dateString = new Date(lastSaveTime).toLocaleString();
+    const dateString = new Date(lastSaveTime as number).toLocaleString();
 
     useEffect(() => {
         let t = getCookie("token")
@@ -137,6 +137,13 @@ const NoteEdit = () => {
             let dec = jose.decodeJwt(t.toString());
             setUserNow(dec.sub as string);
         }
+        setTimeout(() => {
+            let ta = document.getElementById("note-text");
+            if (ta !== null) {
+                ta.style.height = "10px";
+                ta.style.height = (ta.scrollHeight) + "px";
+            }
+        }, 1000)
     }, [])
 
     useEffect(() => {
@@ -147,10 +154,11 @@ const NoteEdit = () => {
                 ta.style.height = (ta.scrollHeight) + "px";
             }
         }, 1000)
-    }, [noteText])
+    }, [noteText, editMode])
 
     useEffect(() => {
         if (data) {
+            // @ts-ignore
             setNoteText(data.content)
             document.title = `Geledit - ${data.title}`;
         }
@@ -158,6 +166,7 @@ const NoteEdit = () => {
 
     useEffect(() => {
         console.log("type save")
+        // @ts-ignore
         typesaveId.current = setTimeout(() => {
                 if (editMode) saveNoteText()
             },
@@ -171,8 +180,12 @@ const NoteEdit = () => {
     </InfoBox>
 
     function getErrorMessage() {
+        // @ts-ignore
         return errors.get(refreshSWR.error) ? errors.get(refreshSWR.error)?.call(this, data) : "Wystąpił nieokreślony błąd";
     }
+
+    const editContent = editMode ? <textarea id="note-text" value={noteText as string} readOnly={!editMode}
+                                             onChange={handleNoteTextChange}></textarea> : <ReactMarkdown>{noteText as string}</ReactMarkdown>
 
     return <>
         <OptionBox>
@@ -185,8 +198,7 @@ const NoteEdit = () => {
             </Button></Link>
         </OptionBox>
         {isLoading ? <InfoBox><p>Loading...</p></InfoBox> : <NoteBox>
-            <textarea id="note-text" value={noteText as string} readOnly={!editMode}
-                      onChange={handleNoteTextChange}></textarea>
+            {editContent}
         </NoteBox>}
         <Dialog open={errorDialogOpen} disablePortal onClose={handleErrorClose}>
             <DialogTitle>Error {refreshSWR.error}</DialogTitle>
