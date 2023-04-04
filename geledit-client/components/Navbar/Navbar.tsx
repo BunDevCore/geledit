@@ -78,10 +78,14 @@ const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
                 </Select>
             </FormControl>
             <NavBarLoginBox>
+                {/* IT WORKS OK? */}
+                {/* @ts-ignore */}
                 <LinkLogin $isLoggedIn={isLoggedIn} href="/login" style={{textDecoration: "none"}}>
                     <LoginButton variant="outlined" aria-label="login button">Zaloguj się</LoginButton>
                     <LoginButtonIcon color="primary" aria-label="login button"><LoginIcon/></LoginButtonIcon>
                 </LinkLogin>
+                {/* IT WORKS OK? */}
+                {/* @ts-ignore */}
                 <LinkUser $isLoggedIn={isLoggedIn} style={{textDecoration: "none"}}>
                     <UserNameDisplay>{user}</UserNameDisplay>
                     <UserButtonIcon color="primary" aria-label="user button" onClick={handleLogout}><LogoutIcon/></UserButtonIcon>
