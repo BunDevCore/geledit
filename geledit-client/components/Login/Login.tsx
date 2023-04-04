@@ -23,7 +23,7 @@ const Login = () => {
                     method: "GET",
                     mode: "cors",
                     headers: {
-                        "Authorization": "Bearer "+t
+                        "Authorization": "Bearer " + t
                     },
                 });
                 if (res.status === 401) {
@@ -72,7 +72,7 @@ const Login = () => {
         })();
     };
 
-    const handleKeyUp = (event) => {
+    const handleKeyUp = (event: any) => {
         if (event.key === "Enter") {
             if (login === 0) {
                 handleLogin(event)
@@ -141,14 +141,19 @@ const Login = () => {
             </Box>
             <LoginDataBox>
                 <TextField id="login-name" label="Login" variant="filled" helperText={loginLabel} required
-                           error={loginLabel !== "Wpisz swoją nazwę"} onChange={(e) => setUser(e.target.value)} onKeyUp={handleKeyUp}/>
-                <TextField id="login-password" label="Hasło" variant="filled" helperText={passLabel} type="password" required
+                           error={loginLabel !== "Wpisz swoją nazwę"} onChange={(e) => setUser(e.target.value)}
+                           onKeyUp={handleKeyUp}/>
+                <TextField id="login-password" label="Hasło" variant="filled" helperText={passLabel} type="password"
+                           required
                            error={passLabel !== ""} onChange={(e) => setPass(e.target.value)} onKeyUp={handleKeyUp}/>
-                <Button sx={{display: login === 1 ? "none" : ""}} variant="contained" onClick={handleLogin}>Zaloguj się</Button>
-                <TextField sx={{display: login === 0 ? "none" : ""}} id="login-password-again" label="Powtórz hasło" variant="filled" type="password" required
-                           error={pass !== passAgain} onChange={(e) => setPassAgain(e.target.value)} onKeyUp={handleKeyUp}/>
+                <Button sx={{display: login === 1 ? "none" : ""}} variant="contained" onClick={handleLogin}>Zaloguj
+                    się</Button>
+                <TextField sx={{display: login === 0 ? "none" : ""}} id="login-password-again" label="Powtórz hasło"
+                           variant="filled" type="password" required
+                           error={pass !== passAgain} onChange={(e) => setPassAgain(e.target.value)}
+                           onKeyUp={handleKeyUp}/>
                 <Button sx={{display: login === 0 ? "none" : ""}} variant="contained" onClick={handleRegister}
-                        >Zarejestruj się</Button>
+                >Zarejestruj się</Button>
             </LoginDataBox>
         </LoginBox>
     </>

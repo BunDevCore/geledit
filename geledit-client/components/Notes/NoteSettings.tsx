@@ -52,7 +52,9 @@ const NoteSettings = () => {
         if (t === null || t === undefined) {
             window.location.href = "/"
         }
-        let dec = jose.decodeJwt(getCookie("token").toString());
+        // literally checked with above if
+        // @ts-ignore
+        let dec = jose.decodeJwt(t.toString());
         setUser(dec.sub as string);
         (async () => {
             let res = await fetch(`http://localhost:5274/User/all`, {
@@ -74,6 +76,8 @@ const NoteSettings = () => {
                         list.splice(i, 1);
                     }
                 }
+                // still works
+                // @ts-ignore
                 setGuests(list)
             }
         })()
@@ -84,7 +88,6 @@ const NoteSettings = () => {
     //         window.location.href = "/"
     //     }
     // }, [user, data]);
-
 
     const handleAdd = (event: React.MouseEvent<HTMLButtonElement>) => {
         let t = getCookie("token");
@@ -134,6 +137,7 @@ const NoteSettings = () => {
         })();
         window.location.replace("/");
     }
+
     return <>
         <SettingsBox>
             <Autocomplete
