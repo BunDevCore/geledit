@@ -3,7 +3,7 @@ import useSWR from "swr";
 import type {Note, SWRReturn} from "../../types/global";
 import {getCookie} from "cookies-next";
 import React, {useEffect, useRef, useState} from "react";
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Switch} from "@mui/material";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, Switch, TextField} from "@mui/material";
 import {
     EditModeText,
     FileNameText,
@@ -66,6 +66,7 @@ const NoteEdit = () => {
     const [editMode, setEditMode] = useState(false)
     const [lastSaveTime, setLastSaveTime] = useState(null as number | null)
     const [lastEditTime, setLastEditTime] = useState(null as number | null)
+    const [newName, setNewName] = useState("")
     const [userNow, setUserNow] = useState("")
     const typesaveId = useRef<number | null>(null)
     const [errorDialogOpen, setErrorDialogOpen] = React.useState(false);
@@ -113,7 +114,7 @@ const NoteEdit = () => {
     function saveNoteText() {
         (async () => {
             const [newNote, status] = await tryPostNoteText(`http://localhost:5274/Note/${id}`, {
-                title: data!.title,
+                title: newName,
                 content: noteText
             });
             if (status === 200) {
@@ -161,6 +162,7 @@ const NoteEdit = () => {
             // @ts-ignore
             setNoteText(data.content)
             document.title = `Geledit - ${data.title}`;
+            setNewName(data.title)
         }
     }, [data])
 
@@ -173,7 +175,7 @@ const NoteEdit = () => {
             2000)
 
         return () => clearTimeout(typesaveId.current as number)
-    }, [editMode, noteText])
+    }, [editMode, noteText, newName])
 
     if (error) return <InfoBox>
         <p>Note not found</p>
@@ -185,15 +187,21 @@ const NoteEdit = () => {
     }
 
     const editContent = editMode ? <textarea id="note-text" value={noteText as string} readOnly={!editMode}
-                                             onChange={handleNoteTextChange}></textarea> : <ReactMarkdown>{noteText as string}</ReactMarkdown>
+                                             onChange={handleNoteTextChange}></textarea> :
+        <ReactMarkdown>{noteText as string}</ReactMarkdown>
 
     return <>
         <OptionBox>
-            <FileNameText>{data?.title}</FileNameText><EditModeText>| Tryb Edycji</EditModeText> <Switch
+            <TextField value={newName} id="nazwa-name" label="Nazwa" variant="filled" required
+                       onChange={(e) => setNewName(e.target.value)} disabled={!editMode}/>
+            {/*<FileNameText>{data?.title}</FileNameText>*/}
+            <EditModeText style={{marginLeft: "1rem"}}>Tryb Edycji</EditModeText> <Switch
             aria-label={'Edit mode'} checked={editMode} onChange={handleEditModeChange}/>
             {lastSaveTime == null ? <></> : <LastSavedInfo>Zapisano {dateString}</LastSavedInfo>}
             <FlexSpace/>
-            <Link href={`./${data?.id}/settings`} style={{textDecoration: "none", display: data?.owner === userNow ? "" : "none"}}><Button style={{minWidth: "6rem"}} variant="contained" type="submit">
+            <Link href={`./${data?.id}/settings`}
+                  style={{textDecoration: "none", display: data?.owner === userNow ? "" : "none"}}><Button
+                style={{minWidth: "6rem"}} variant="contained" type="submit">
                 <SettingsIcon sx={{marginRight: "0.25rem"}}/>Ustawienia
             </Button></Link>
         </OptionBox>
