@@ -30,8 +30,8 @@ const theme: Theme = {
     navbarBackgroundColor: "#063e5c",
     navbarText: "#fff",
 
-    loginBackgroundColor: "#eee",
-    loginBoxShadowColor: "#063e5c",
+    loginBackgroundColor: "#063e5c",
+    loginBoxShadowColor: "#0006",
 
     noteMenuBackgroundColor: "#063e5c",
     noteMenuBoxShadowColor: "#0006",

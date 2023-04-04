@@ -60,7 +60,7 @@ export const UserButtonIcon = styled(IconButton)`
   margin-left: 0.25rem;
   border: #2196f3a0 solid 1px;
   border-radius: 100rem;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 1rem;
 `;
 
 export const UserNameDisplay = styled.p`
