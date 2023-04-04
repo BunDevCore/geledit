@@ -185,7 +185,7 @@ public class NoteController : ControllerBase
         
         // at this point the note is valid, the user is authorized, let's go
         var dbUser = await _db.Users.FirstAsync(x => x.UserName == userId);
-        if (note.CurrentEditor != null && note.CurrentEditor.Id != dbUser.Id)
+        if (note.CurrentEditor != null && note.CurrentEditor.Id != dbUser.Id && note.ReservedUntil > DateTime.UtcNow)
         {
             _logger.LogInformation("conflict..");
             return Conflict("write access to this note is already taken!");
@@ -217,7 +217,7 @@ public class NoteController : ControllerBase
         }
         
         // potencjalnie śmieszne race condition tu może być ale idc
-        if (note.CurrentEditor == null || note.CurrentEditor.UserName == userId)
+        if (note.CurrentEditor == null || note.CurrentEditor.UserName == userId || note.ReservedUntil < DateTime.UtcNow)
         {
             var dbUser = await _db.Users.FirstAsync(x => x.UserName == userId);
             await RefreshOwnership(id);
