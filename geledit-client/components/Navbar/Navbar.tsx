@@ -17,6 +17,7 @@ import {getCookie, removeCookies} from "cookies-next";
 import React, {useEffect, useState} from "react";
 import type {ChangeTheme} from "types/navbar";
 import * as jose from "jose";
+import Link from "next/link";
 
 const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
     const [currTheme, setTheme] = useState("light");
@@ -69,7 +70,7 @@ const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
                     label="Theme"
                     onChange={handleChangeTheme}
                     variant="standard"
-                    sx={{m: 2, minWidth: 120}}
+                    sx={{m: 2, minWidth: 60, flexShrink: 1}}
                 >
                     <MenuItem value={"light"}>Light</MenuItem>
                     <MenuItem value={"dark"}>Dark</MenuItem>
@@ -87,7 +88,7 @@ const Navbar = ({changeTheme}: { changeTheme: ChangeTheme }) => {
                 {/* IT WORKS OK? */}
                 {/* @ts-ignore */}
                 <LinkUser $isLoggedIn={isLoggedIn} style={{textDecoration: "none"}}>
-                    <UserNameDisplay>{user}</UserNameDisplay>
+                    <Link href={`/user/${user}`} style={{textDecoration: "none"}}><UserNameDisplay>{user}</UserNameDisplay></Link>
                     <UserButtonIcon color="primary" aria-label="user button" onClick={handleLogout}><LogoutIcon/></UserButtonIcon>
                 </LinkUser>
             </NavBarLoginBox>

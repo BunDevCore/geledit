@@ -57,9 +57,15 @@ export const LinkUser = styled.div`
 `;
 
 export const UserButtonIcon = styled(IconButton)`
-  margin-left: 1rem;
+  margin-left: 0.25rem;
+  border: #2196f3a0 solid 1px;
+  border-radius: 100rem;
+  padding: 0.5rem 1rem;
 `;
 
 export const UserNameDisplay = styled.p`
-    color: ${props => props.theme.navbarText}
+  border: #2196f3a0 solid 1px;
+  border-radius: 100rem;
+  padding: 0.5rem 1rem;
+  color: ${props => props.theme.navbarText}
 `;
