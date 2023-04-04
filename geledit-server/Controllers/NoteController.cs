@@ -28,13 +28,21 @@ public class NoteController : ControllerBase
     [HttpGet]
     public IEnumerable<ReturnNoteDto> Get()
     {
-        return _db.Notes.Select(note => new ReturnNoteDto
+        var username = _userManager.GetUserId(User);
+        var note = _db.Notes.Include(n => n.Guests).FirstOrDefault(n => n.Owner.UserName == username);
+
+        if (note != null || note.Guests.FirstOrDefault(u => u.UserName == username) != null)
         {
-            Content = null,
-            Id = note.Id,
-            Owner = note.Owner.UserName,
-            Title = note.Title
-        });
+            return _db.Notes.Select(note => new ReturnNoteDto
+            {
+                Content = null,
+                Id = note.Id,
+                Owner = note.Owner.UserName,
+                Title = note.Title
+            });
+        }
+
+        return Enumerable.Empty<ReturnNoteDto>();
     }
 
     [HttpGet("{id}")]
@@ -98,6 +106,7 @@ public class NoteController : ControllerBase
         {
             return NotFound("user does not exist");
         }
+
         _logger.LogInformation("guest = {Guest}", guest);
 
         var userId = _userManager.GetUserId(User);
@@ -150,7 +159,7 @@ public class NoteController : ControllerBase
         {
             return NotFound("user does not exist");
         }
-        
+
         var userId = _userManager.GetUserId(User);
         if (note.Owner.UserName != userId)
         {
@@ -172,7 +181,7 @@ public class NoteController : ControllerBase
         {
             return NotFound("note is nonexistent");
         }
-        
+
         var userId = _userManager.GetUserId(User);
         _logger.LogInformation("entering refresh for note {NoteId}, username = {Username}", note.Id, userId);
         _logger.LogInformation("uname: {UserId} owner: {OwnerUserName} >>", userId, note?.Owner.UserName);
@@ -182,7 +191,7 @@ public class NoteController : ControllerBase
         {
             return Unauthorized("you have no write permissions for this note");
         }
-        
+
         // at this point the note is valid, the user is authorized, let's go
         var dbUser = await _db.Users.FirstAsync(x => x.UserName == userId);
         if (note.CurrentEditor != null && note.CurrentEditor.Id != dbUser.Id && note.ReservedUntil > DateTime.UtcNow)
@@ -190,7 +199,7 @@ public class NoteController : ControllerBase
             _logger.LogInformation("conflict..");
             return Conflict("write access to this note is already taken!");
         }
-        
+
         note.CurrentEditor = dbUser;
         note.ReservedUntil = DateTime.UtcNow + TimeSpan.FromSeconds(20);
         _logger.LogInformation("reserved until {ReservedUntil}", note.ReservedUntil);
@@ -207,15 +216,15 @@ public class NoteController : ControllerBase
         {
             return NotFound("note is nonexistent");
         }
-        
+
         var userId = _userManager.GetUserId(User);
-        
+
         _logger.LogWarning("uname: {UserId} owner: {OwnerUserName} change content>>", userId, note?.Owner.UserName);
         if (userId != note?.Owner.UserName && note?.Guests.FirstOrDefault(x => x.UserName == userId) == null)
         {
             return Unauthorized("you have no write permissions for this note");
         }
-        
+
         // potencjalnie śmieszne race condition tu może być ale idc
         if (note.CurrentEditor == null || note.CurrentEditor.UserName == userId || note.ReservedUntil < DateTime.UtcNow)
         {
