@@ -12,8 +12,17 @@ import {Note, SWRReturn} from "../../types/global";
 import useSWR from "swr";
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 
-// @ts-ignore
-const fetcher = (...args: any[]) => fetch(...args).then((res) => res.json())
+const fetcherGetNoteText = (key: string) => {
+    const headers = getCookie("token") ? {
+        "Authorization": `Bearer ${getCookie("token")}`
+    } : {}
+
+
+    return fetch(key, {
+        "headers": headers as Record<string, string>
+    }).then((res) => res.json())
+}
+
 
 const NoteSettings = () => {
     const router = useRouter();
@@ -22,7 +31,7 @@ const NoteSettings = () => {
     const [user, setUser] = useState("");
     const [guestValue, setGuestValue] = useState<string | null>("");
 
-    const {data, error, isLoading, mutate}: SWRReturn<Note> = useSWR(`http://localhost:5274/Note/${id}`, fetcher);
+    const {data, error, isLoading, mutate}: SWRReturn<Note> = useSWR(`http://localhost:5274/Note/${id}`, fetcherGetNoteText);
 
     useEffect(() => {
         if (data) {
