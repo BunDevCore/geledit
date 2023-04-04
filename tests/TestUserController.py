@@ -1,4 +1,11 @@
+import uuid
+
 import requests
+
+
+def generate_new_username():
+    return str(uuid.uuid4()).replace('-', '')[:30]
+
 
 def register(name):
     register_url = "http://localhost:5274/Auth/Register"
@@ -17,7 +24,7 @@ def register(name):
 
 class TestUserController:
     def test_search_by_username(self):
-        username = "testSearchByUsername"
+        username = generate_new_username()
         register(username)
 
         search_user_url = f"http://localhost:5274/User/byUsername/{username}"
@@ -28,7 +35,7 @@ class TestUserController:
         assert response.status_code == 200
 
     def test_search_by_wrong_username(self):
-        username = "notRealUsername"
+        username = generate_new_username()
 
         search_user_url = f"http://localhost:5274/User/byUsername/{username}"
         response = requests.get(
@@ -38,7 +45,7 @@ class TestUserController:
         assert response.status_code == 404
 
     def test_deleting_of_user(self):
-        username = "ToBeDeleted"
+        username = generate_new_username()
         token = register(username)
 
         headers = {"Authorization": f"Bearer {token}"}
@@ -52,8 +59,8 @@ class TestUserController:
         assert response.status_code == 200
 
     def test_deleting_of_nonexistent_user(self):
-        username = "ToBeDeleted"
-        badusername = "Uhhh"
+        username = generate_new_username()
+        badusername = generate_new_username()
         token = register(username)
 
         headers = {"Authorization": f"Bearer {token}"}
@@ -67,8 +74,8 @@ class TestUserController:
         assert response.status_code == 404
 
     def test_deleting_of_user_as_other_user(self):
-        username = "ToBeDeleted"
-        username2 = "OtherUser"
+        username = generate_new_username()
+        username2 = generate_new_username()
         register(username)
         token = register(username2)
 
