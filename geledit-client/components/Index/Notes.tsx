@@ -11,7 +11,16 @@ import Link from "next/link";
 import {useRouter} from "next/router";
 
 // @ts-ignore
-const fetcher = (...args: any[]) => fetch(...args).then((res) => res.json())
+const fetcher = (key: string) =>{
+    const headers = getCookie("token") ? {
+            "Authorization": `Bearer ${getCookie("token")}`
+        } : {}
+
+
+    return fetch(key, {
+        "headers": headers as Record<string, string>
+    }).then((res) => res.json())
+}
 
 const Notes = () => {
     const [noteName, setNoteName] = useState("");
@@ -23,7 +32,7 @@ const Notes = () => {
         let t = getCookie("token");
         setToken(t?.toString())
         if (t !== undefined) {
-            let dec = jose.decodeJwt(getCookie("token").toString());
+            let dec = jose.decodeJwt(t.toString());
             setUser(dec.sub)
         }
     }, []);
