@@ -119,6 +119,9 @@ const NoteEdit = () => {
 
     const handleEditModeChange = (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
         setEditMode(checked);
+        if (!checked) {
+            saveNoteText();
+        }
         console.log(`edit mode: ${checked}`)
     }
 
