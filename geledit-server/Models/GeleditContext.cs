@@ -21,12 +21,13 @@ public class GeleditContext : DbContext
             .WithMany(u => u.IsGuestIn);
 
         modelBuilder.Entity<Note>()
-            .HasOne(n => n.Owner);
+            .HasOne(n => n.Owner)
+            .WithMany(u => u.OwnedNotes);
 
         modelBuilder.Entity<Note>()
             .HasOne(n => n.CurrentEditor);
 
-        modelBuilder.Entity<User>()
-            .HasMany(u => u.OwnedNotes);
+        // modelBuilder.Entity<User>()
+        //     .HasMany(u => u.OwnedNotes);
     }
 }
