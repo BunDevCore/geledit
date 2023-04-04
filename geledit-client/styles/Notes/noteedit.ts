@@ -7,6 +7,7 @@ export const LastSavedInfo = styled.span`
 `
 export const OptionBox = styled.div`
   display: flex;
+  flex-wrap: wrap;
   border-radius: 2rem;
   background-color: ${props => props.theme.defaultBackgroundColor};
   box-shadow: 0 .25rem .25rem ${props => props.theme.defaultBoxShadowColor};
@@ -21,7 +22,7 @@ export const OptionBox = styled.div`
   }
   
   @media (min-width: 500px) {
-    min-width: 50rem;
+    min-width: min(50rem, 90vw);
   }
 `;
 
