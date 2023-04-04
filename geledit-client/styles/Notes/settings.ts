@@ -2,8 +2,9 @@ import styled from "styled-components";
 
 export const SettingsBox = styled.div`
   display: flex;
+  flex-wrap: wrap;
   align-content: center;
-  justify-content: center;
+  justify-content: left;
   flex-direction: row;
   margin-top: 1rem;
   padding: 1rem;
@@ -12,7 +13,7 @@ export const SettingsBox = styled.div`
   box-shadow: 0 .25rem .25rem ${props => props.theme.defaultBoxShadowColor};
   color: ${props => props.theme.defaultText};
   
-  @media (max-width: 500px) {
+  @media (max-width: 550px) {
     flex-direction: column;
   }
 `;
